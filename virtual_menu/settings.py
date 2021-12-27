@@ -26,7 +26,16 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-%t^icwtx(^6bqz)7kch*@ifvfv60m4()g2)^1chn-2p8vihi6g'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = config('DEBUG', cast=bool, default=False)
+### ----
+    ### RODANDO LOCALMENTE
+    ### SERVIDOR TESTE:
+DEBUG = True
+    ### QUANDO FOR OFICIAL
+    ### COLOCAR O DEBUG ABAIXO
+    
+##DEBUG = config('DEBUG', cast=bool, default=False)
+
+### UP
 
 ALLOWED_HOSTS = ['https://alemao-streakhouse.herokuapp.com/','127.0.0.1','localhost']
 
@@ -142,17 +151,9 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/3.2/howto/static-files/
 
 STATIC_URL = '/static/'
-MEDIA_URL = '/media/'
-
-MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
-
-STATICFILES_DIRS = [
-    BASE_DIR / "static",
-]
-
-STATIC_ROOT = BASE_DIR / "staticfiles"
-
-STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
+#Location of static files
+STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static'), ]
+STATIC_ROOT  = os.path.join(BASE_DIR, 'staticfiles')
 # Default primary key field type
 # https://docs.djangoproject.com/en/3.2/ref/settings/#default-auto-field
 
