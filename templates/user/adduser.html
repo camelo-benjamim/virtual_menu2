@@ -1,0 +1,31 @@
+{% load static %}
+<!doctype html>
+<html lang="pt-br">
+  <head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!-- Bootstrap CSS -->
+    <link rel="shortcut icon" href="{%static '/img/favicon.png' %}">
+    <!---->
+    <link href="{%static '/css/user.css' %}" rel="stylesheet">
+
+    <title>Cadastrar estabelecimento</title>
+  </head>
+  <body>
+  
+  <!--NAVBAR-->
+  {% include 'base/dashboard_base.html'%}
+  <div class="container-fluid">
+  <!--FORM-->
+  {% include 'snippets/user/user_snippet.html' %}
+  <!--END FORM-->
+  </div>
+  {% include 'footer/register_footer.html'%}
+  
+  <!--JAVA SCRIPT-->
+  <script src="{% static 'js/bootstrap.js'%}"></script>
+  <!----->
+  </body>
+</html>

@@ -1,0 +1,84 @@
+<!doctype html>
+{%load static%}
+{% load crispy_forms_tags %}
+
+<html lang="pt-br">
+  <head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap CSS -->
+    <link rel="shortcut icon" href="{%static '/img/favicon.png' %}">
+    <link rel="stylesheet" href="{% static 'css/user.css' %}">
+
+    <title>Cardápio</title>
+  </head>
+  <body>
+    <!-- Just an image -->
+    {% include 'base/dark_base.html' %}
+    <!--NEED DIV STYLE AND BUTTON TO SAVE!-->
+    <div class="container">
+        
+        {% block content %}
+        {% if pedido %}
+        
+        <!--INFORMACOES DO PEDIDO-->
+        <div class="container text-center my-4">
+        <h1 class="my-2">Informacoes do pedido:</h1>
+        <h3>Hora do pedido: <strong class="text-danger">{{pedido.data_do_pedido}}</strong></h3>
+          <h3 class="text-center">Mesa: <strong class="text-danger">{{pedido.mesa_pedido}}</strong></h3>
+          <h3 class="text-center">Metodo de pagamento: <strong class="text-danger">{{ pedido.metodo_de_pagamento }}</strong></h3>
+  
+        
+        
+          <h3 class="my-2">VALOR TOTAL  <strong class="text-danger">$ {{valor_total}} </strong></h3>
+        
+    
+          <!--ITENS DO PEDIDO-->
+            
+                <h1>Itens:</h1>
+                <form action="." method="post">
+                  {% csrf_token %}
+                <div class="container">
+                    <div class="row justify-content-center">
+                        {% for pedido in pedido.pedido.all %}
+                        <div class="card mt-2 mb-4 mx-2" style="width: 18rem;">
+                            
+                            <div class="card-body">
+                              {% if pedido.item..img %}
+                              <img src="{{pedido.item.img.url}}" class="card-img-top" alt="...">
+                              {% endif %}
+                              <h4 class="card-title ">{{pedido.item}}</h4>
+                              <h4 class="card-title "> Quantidade: {{pedido.quantidade}} </h4>
+                            </div>
+                        </div>
+
+                        {% endfor %}
+                        <div class="container-sm">
+                          <input class="btn btn-warning my-2" type="submit" value="PEDIDO CONCLUIDO" method="post">
+                        </div>
+                    </div>
+
+                  </form>
+          
+            
+          
+          {% else %}
+          
+          <h5 class="text-center my-2"> A concluir:
+            <span class="position-relative translate badge rounded-pill bg-danger">
+             0
+            </span>
+        </h5>
+        {% endif %}
+        
+    {%endblock %}
+    </div>
+    {% include 'footer/register_white.html' %}
+
+    <!--JAVA SCRIPT-->
+    <script src="{% static 'js/bootstrap.js'%}"></script>
+    <!----->
+  </body>
+</html>

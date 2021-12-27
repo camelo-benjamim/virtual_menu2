@@ -1,0 +1,62 @@
+<!doctype html>
+{%load static%}
+{% load crispy_forms_tags %}
+
+<html lang="pt-br">
+  <head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap CSS -->
+    <link rel="shortcut icon" href="{%static '/img/favicon.png' %}">
+    <link rel="stylesheet" href="{% static 'css/bootstrap.css' %}">
+
+    <title>Pagamento</title>
+  </head>
+  <body>
+    <!-- Just an image -->
+    <nav class="navbar navbar-dark bg-dark">
+        <div class="container">
+            <a class="navbar-brand" href="#">
+              <img src="{%static '/img/logo2.png' %}" alt="" width="48" height="45">
+            </a>
+        </div>
+    </nav>
+    <!--NEED DIV STYLE AND BUTTON TO SAVE!-->
+    {% block content %}
+    <div class="d-flex justify-content-center">
+      {% if metodos_de_pagamento %}
+      <form action="/cardapio/pagamento/" method="post" class="col-sm-4 mt-5 mb-5 pt-3 pb-2 px-5 border border-secondary">
+        {% csrf_token %}
+        <h1 class="text-center">Pagamento:</h1>
+        <div class="row d-flex justify-content-center">
+      <select class="text-center" name="pagamento_metodo" style="max-width:200px;" aria-label=".form-select-lg example">
+          {% for metodo in metodos_de_pagamento %}
+          <option value="{{metodo}}">{{metodo}}</option>
+          {% endfor %}
+      </select>
+        <div class="container text-center">
+          <input class="btn btn-warning my-2" type="submit" value="CONTINUAR">
+        </div>
+      </div>
+    </form>
+  </div>
+    
+    {%else%}
+    <h1 class="text-center my-2 bg-danger">ERRO TEMPORÁRIO</h1>
+    {% endif %}
+
+    {% include 'footer/fixed_position_footer.html' %}
+   
+    {% endblock %}
+        
+        
+    
+        
+
+    <!--JAVA SCRIPT-->
+    <script src="{% static 'js/bootstrap.js'%}"></script>
+    <!----->
+  </body>
+</html>

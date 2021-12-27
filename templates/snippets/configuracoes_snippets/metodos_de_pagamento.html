@@ -1,0 +1,37 @@
+{% load static %}
+{% block content %}
+    {% if metodos %}
+            <div class="container text-center my-3">
+                <h1>Métodos de pagamento:</h1>
+                <div class="container">
+                    <div class="row justify-content-center">
+                        {% for metodo in metodos %}
+
+                        <div class="card my-2 mx-2" style="width: 18rem;">
+                            
+                            <div class="card-body">
+                              <h4 class="card-title">{{ metodo.pagamento }}</h4>
+                              {% if status == True %}
+                            
+                            {% endif%}
+                            </div>
+                        </div>
+
+                        
+                        {% endfor %}
+                        
+                    </div>
+                
+                
+                 
+                {% else %}
+                <div class="container-fluid text-center my-2 mx-3">
+                    <h1>Métodos de Pagamento:</h1>
+                    <h3>Infelizmente você ainda não adicionou nenhum método de pagamento:</h3>
+                    <h4>Clique no botão abaixo para adicionar:</h4>
+    
+                        <a class="btn btn-primary btn-lg my-2" href="/pagamento/adicionar_metodo_de_pagamento/">Adicionar Método de Pagamento</a>
+                    </div>
+                </div>
+    {% endif %} 
+{% endblock %}

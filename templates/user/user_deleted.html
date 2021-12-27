@@ -1,0 +1,37 @@
+{%load static%}
+{% load crispy_forms_tags %}
+<!doctype html>
+<html lang="pt-br">
+  <head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!-- Bootstrap CSS -->
+    <link rel="shortcut icon" href="{%static '/img/favicon.png' %}">
+    <!---->
+    <link href="{%static '/css/deleted_user.css' %}" rel="stylesheet">
+
+    <title>Apagar Cadastro</title>
+  </head>
+  <body>
+  <!--NAVBAR-->
+  <nav class="navbar navbar-light bg-dark">
+    <div class="container">
+        <a class="navbar-brand" href="#">
+        <img src="{%static '/img/logo2.png' %}" alt="" width="30" height="24">
+        </a>
+    </div>
+  </nav>
+  <!--FORM-->
+  <div class="container-sm my-2">
+  <h1>Usuário deletado com sucesso!</h1>
+  <div class= "container-fluid">
+  <p> Ficamos tristes com sua partida, esperamos que retorne à nossa plataforma o quanto antes., em caso de reclamação contate-nos pelo nosso email @mail</p>
+  </div>
+  </div>
+    <!--JAVA SCRIPT-->
+    <script src="{% static 'js/bootstrap.js'%}"></script>
+    <!----->
+  </body>
+</html>

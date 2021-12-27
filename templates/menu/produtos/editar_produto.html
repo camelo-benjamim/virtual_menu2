@@ -1,0 +1,71 @@
+<!doctype html>
+{%load static%}
+{% load crispy_forms_tags %}
+
+<html lang="pt-br">
+  <head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap CSS -->
+    <link rel="shortcut icon" href="{%static '/img/favicon.png' %}">
+    <link rel="stylesheet" href="{% static 'css/bootstrap.css' %}">
+
+    <title>Adicionar Categoria</title>
+  </head>
+  <body>
+    <!-- Just an image -->
+    <nav class="navbar navbar-dark bg-dark">
+        <div class="container">
+            <a class="navbar-brand" href="#">
+            <img src="{%static '/img/logo2.png' %}" width="40">
+            </a>
+        </div>
+    </nav>
+    <!--NEED DIV STYLE AND BUTTON TO SAVE!-->
+      
+        <div class=" d-flex justify-content-center">
+          <form action="/editar_produto/{{post.item_nome}}/" method="post" class="col-sm-4 mt-5 mb-5 pt-3 pb-2 px-5 bg-light border border-secondary" enctype="multipart/form-data">
+            <h1 class="text-center"> Editar Produto: </h1>
+              {% csrf_token %}
+              {{form.img|as_crispy_field}}
+              <div class="my-2">
+                {{form.item_nome|as_crispy_field}}
+              </div>
+              <div class="my-2">
+                {{form.descricao|as_crispy_field}}
+              </div>
+              <div class="my-2">
+                {{form.preco|as_crispy_field}}
+              </div>
+              <div class="my-2">
+                {{form.classificacao|as_crispy_field}}
+              </div>
+              <div class="my-2">
+                {{form.componentes|as_crispy_field}}
+              </div>
+              <div class="col text-center">
+                <button type="submit" class="btn btn-success my-2"  method="post" >Salvar</button>
+              </div>
+              {% if messages %}
+        
+            {% for message in messages %}
+            <div class="alert alert-danger" role="alert">
+              {{message}}
+            </div>
+            {% endfor %}
+      
+        {% endif %}
+          </form>
+      <div>
+      </div>
+      </div>
+      <div class="pb-3">
+      {% include 'footer/register_white.html' %}
+      </div>
+    </body>
+
+    <!--JAVA SCRIPT-->
+    <script src="{% static 'js/bootstrap.js'%}"></script>
+    <!----->

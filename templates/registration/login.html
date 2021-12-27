@@ -1,0 +1,33 @@
+{% load static%}
+
+<!doctype html>
+<html lang="pt-br">
+  <head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!-- Bootstrap CSS -->
+    <!--PUT THE FAVICO-->
+    <link rel="shortcut icon" href="{%static '/img/favicon.png' %}">
+    <link rel="stylesheet" href="{%static '/css/bootstrap.css' %}" >
+
+    <title>Login</title>
+  </head>
+  <body>
+  <!--STARTNAVBAR-->
+    {% include 'base/dark_base.html'%}
+    <!--ENDNAVBAR-->
+    <!--LOGIN FORM-->
+    <div class="container-fluid">
+    
+      {% include 'snippets/login_snippet.html' %}
+      {% include 'footer/fixed_position_footer.html' %}
+      <!--END LOGIN FORM-->
+    </div>
+    
+    <!--JAVA SCRIPT-->
+    <script src="{% static 'js/bootstrap.js'%}"></script>
+    <!----->
+  </body>
+</html>

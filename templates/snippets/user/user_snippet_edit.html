@@ -1,0 +1,44 @@
+{% load static %}
+{% load crispy_forms_tags %}
+
+<div class="container-sm">
+    <h1>Editar Informações:</h1>
+    <form action="." method="post" class="form-group" enctype="multipart/form-data">
+    {% csrf_token %}
+    <div class="container-fluid mx-1 my-4">
+    <h2>Informações do estabelecimento:</h2>
+      {{form.companysname|as_crispy_field}}
+      {{form.postal_code|as_crispy_field}}
+      {{form.city|as_crispy_field}}
+      {{form.state|as_crispy_field}}
+      {{form.address|as_crispy_field}}
+      {{form.district|as_crispy_field}}
+      {{form.number_ref|as_crispy_field}}
+      {{form.main|as_crispy_field}}
+      {% if messages %}
+
+            {% for message in messages %}
+            <div class="alert alert-danger" role="alert">
+              {{message}}
+            </div>
+            {% endfor %}
+
+      {% endif %}
+
+      
+    <h2 class="my-4">Informações do Proprietário:</h2>
+      {{form.first_name|as_crispy_field}}
+      {{form.last_name|as_crispy_field}}
+      {{form.email|as_crispy_field}}
+      {{form.contacts_phone|as_crispy_field}}
+    <h2 class="my-4">Nome de usuário</h2>
+      {{form.username| as_crispy_field}}
+      <a href="/auth/user/password_change/">Editar Senha de usuário</a>
+      
+      
+      <div class="container-fluid my-2 text-center">
+      <input type="submit" value="Salvar" class="btn btn-primary">
+      </div>
+    </form>
+  </div>
+  </div>

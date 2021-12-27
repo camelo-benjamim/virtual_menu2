@@ -1,0 +1,66 @@
+<!doctype html>
+{%load static%}
+{% load crispy_forms_tags %}
+
+<html lang="pt-br">
+  <head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap CSS -->
+    <link rel="shortcut icon" href="{%static '/img/favicon.png' %}">
+    <link rel="stylesheet" href="{% static 'css/user.css' %}">
+
+    <title>Cardápio</title>
+  </head>
+  <body>
+    <!-- Just an image -->
+    {% include 'base/dashboard_base.html' %}
+    <!--NEED DIV STYLE AND BUTTON TO SAVE!-->
+    <div class="container">
+        <h1 class="text-center my-2">Pedidos:</h1>
+        {% if messages %}
+        
+                {% for message in messages %}
+                <div class="alert alert-danger" role="alert">
+                {{message}}
+                </div>
+                {% endfor %}
+      
+        {% endif %}
+        
+        <h5 class="text-center my-2"> A concluir:
+            <span class="position-relative translate badge rounded-pill bg-danger">
+             {{total}}
+            </span>
+        </h5>
+
+        <div class="list-group">
+            {%for i in carrinhos%}
+           
+            <a href="/cardapio/ver_pedido/{{i.id}}/" class="list-group-item list-group-item-action" aria-current="true">
+              <div class="d-flex w-100 justify-content-between">
+                <h4 class="mb-1 text-danger">{{i.mesa_pedido}}</h4>
+                <small>{{i.data_do_pedido}}</small>
+              </div>
+              {% for a in i.pedido.all%}
+              <H6 class="mb-1">{{a}}</H6>
+              {%endfor%}
+              
+            </a>
+            
+            {% endfor %}
+          </div>
+    {% block content %}
+    {%endblock %}
+    </div>
+    
+        
+
+    <!-- Optional JavaScript -->
+    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+    <script src="{% static 'js/bootstrap.js'%}"></script>
+
+  </body>
+</html>

@@ -1,0 +1,48 @@
+{% load static %}
+{% block content %}
+    {% if categorias %}
+            <div class="container text-center my-3">
+                <h1>Categorias:</h1>
+                <div class="container">
+                    <div class="row justify-content-center">
+                        {% for cat in categorias %}
+                        <div class="card my-2 mx-2" style="width: 18rem;">
+                            
+                            <div class="card-body">
+                              <h4 class="card-title">{{cat.text}}</h4>
+                              <a class="btn btn-primary my-1" href="/produtos_por_categoria/{{cat.text}}/">Visualizar</a>
+                              {% if status == True %}
+                              <a class="btn btn-dark" href="#" role="button" id="dropdownMenuLink" data-bs-toggle="dropdown" aria-expanded="false">
+                                Modificar 
+                                {% endif %}
+                            </a>
+                          
+                            <ul class="dropdown-menu" aria-labelledby="dropdownMenuLink">
+                              <li><a class="dropdown-item" href="/editar_categoria/{{cat.text}}/">Editar categoria</a></li>
+                              <li><a class="dropdown-item bg-danger text-light" href="/remover_categoria/{{cat.text}}/">Remover categoria</a></li>
+                            </ul>
+                            </div>
+                        </div>
+
+                        {% endfor %}
+                        <div class="d-flex justify-content-center my-3">
+                            <ul class="list-group d-flex justify-content-center">
+                                {% if status == True %}
+                                <a class="btn btn-success btn-lg my-1" href="/adicionar_categoria/">Adicionar Categoria</a>
+                                {% endif %}
+                            </ul>
+                        </div>
+                    </div>
+                
+                
+                 
+                {% else %}
+                <div class="container-fluid text-center">
+                <h1>Categorias:</h1>
+                    <a class="btn btn-primary" href="/adicionar_categoria/">Adicionar Categoria</a>
+                </div>
+            </div>
+    {% endif %} 
+{% endblock %}
+
+    

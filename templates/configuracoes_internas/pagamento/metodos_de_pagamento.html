@@ -1,0 +1,35 @@
+<!doctype html>
+{% load static%}
+<html lang="pt-br">
+  <head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!-- Bootstrap CSS -->
+    <link rel="shortcut icon" href="{%static '/img/favicon.png' %}">
+    <link href="{% static '/css/bootstrap.css' %}" rel="stylesheet">
+
+    <title>Métodos de pagamento</title>
+  </head>
+  <body>
+    <!--START NAVBAR-->
+    {% include 'base/dark_base.html' %}
+    <!--END NAVBAR-->
+    <!--AINDA NÃO FUNCIONA PERFEITAMENTE, IMPLEMENTAR CATEGORIAS-->
+    <div class="container-fluid">
+        {% include 'snippets/configuracoes_snippets/metodos_de_pagamento.html' %}
+    </div>
+    {% if quantidade < 12 %}
+    
+    {% include 'footer/fixed_position_footer.html' %}
+    {% else %}
+    <div class="pt-4">
+    {% include 'footer/register_white.html' %}
+    {% endif %}
+  </div>
+   <!--JAVA SCRIPT-->
+   <script src="{% static 'js/bootstrap.js'%}"></script>
+   <!----->
+  </body>
+</html>

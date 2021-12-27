@@ -1,0 +1,66 @@
+<!doctype html>
+{%load static%}
+{% load crispy_forms_tags %}
+
+<html lang="pt-br">
+  <head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap CSS -->
+    <link rel="shortcut icon" href="{%static '/img/favicon.png' %}">
+    <link rel="stylesheet" href="{% static 'css/bootstrap.css' %}">
+
+    <title>Cardápio</title>
+  </head>
+  <body>
+    <!-- Just an image -->
+    <nav class="navbar navbar-dark bg-dark">
+        <div class="container">
+            <a class="navbar-brand" href="#">
+              <img src="{%static '/img/logo2.png' %}" alt="" width="48" height="45">
+            </a>
+        </div>
+    </nav>
+    <!--NEED DIV STYLE AND BUTTON TO SAVE!-->
+    {% block content %}
+    <div class="container-sm text-center my-3">
+      
+        <h1 class="text-center text-danger my-2"> MEU CARRINHO: </h1>
+        {% if pedidos %}
+        <form action="/cardapio/meu_carrinho/" method="post" class="post-form">
+          {% csrf_token %}
+        <ol class="list-group list-group">
+        {% for pedido in pedidos %}
+          <li class="list-group-item d-flex justify-content-between align-items-start">
+            <div class="ms-3 me-auto">
+              <div class="fw-bold">{{pedido.item}}</div>
+              <div class="text-start">R$ {{pedido.item.preco}}</div>
+            </div>
+            
+              <input type="number" name="{{pedido.item}}" value="{{pedido.quantidade}}" class="text-center"  style="max-width:100px;"  min="0" max="10" step="1"/>
+              {% endfor %}
+          </ol>
+
+          <h2 class="text-center my-2">Valor total: R$ {{valor_total}}</h2>
+        <input class="btn btn-warning my-2" type="submit" value="CONTINUAR">
+      </form>
+        {%else%}
+        <h2>CARRIHO VAZIO, POR FAVOR ADICIONE ITENS</h2>
+        {% endif %}
+      </div>
+      {% if quantidade < 6 %}
+    
+    {% include 'footer/fixed_position_footer.html' %}
+    {% else %}
+    <div class="pt-1 pb-3">
+    {% include 'footer/register_white.html' %}
+    {% endif %}
+    {% endblock %}
+        
+    <!--JAVA SCRIPT-->
+    <script src="{% static 'js/bootstrap.js'%}"></script>
+    <!----->
+  </body>
+</html>

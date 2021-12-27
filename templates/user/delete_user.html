@@ -1,0 +1,45 @@
+{%load static%}
+{% load crispy_forms_tags %}
+<!doctype html>
+<html lang="pt-br">
+  <head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!-- Bootstrap CSS -->
+    <link rel="shortcut icon" href="{%static '/img/favicon.png' %}">
+    <!---->
+    <link href="{%static '/css/delete_user.css' %}" rel="stylesheet">
+
+    <title>Apagar Cadastro</title>
+  </head>
+  <body>
+  <!--NAVBAR-->
+  {% include 'base/danger_base.html'%}
+  <!--FORM-->
+  <div class="container-sm my-4">
+    <div class="container-fluid">
+      {% if id_usr%}
+      <h2> Seu nome de usuário é:</h2>
+      <h2 style="background-color: yellow;">{{id_usr}}</h2>
+      <h4> Por favor, repita-o abaixo para prosseguir </h4>
+      {%endif%}
+      <form action="." method="post" class="form-group">
+      {% csrf_token %}
+      {{form|crispy}}
+      <!--NEED AJAX/JS-->
+      <!--TRY TO FIX ONLY USING PYTHON IF NOT FIX, USE AJAX/JS-->
+          <div class="text-center my-4"> 
+            <button type="submit" class="btn btn-danger">Apagar Usuário</button>
+          </div>
+      </form>
+    </div>
+  
+</div>
+{% include 'footer/fixed_position_footer.html'%}
+    <!--JAVA SCRIPT-->
+    <script src="{% static 'js/bootstrap.js'%}"></script>
+    <!----->
+  </body>
+</html>

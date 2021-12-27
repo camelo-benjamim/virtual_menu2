@@ -1,0 +1,36 @@
+{%load static%}
+{% load crispy_forms_tags %}
+
+<!doctype html>
+<html lang="pt-br">
+  <head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!-- Bootstrap CSS -->
+    <link rel="shortcut icon" href="{%static '/img/favicon.png' %}">
+    <!---->
+    <link href="{%static '/css/user.css' %}" rel="stylesheet">
+
+    <title>Editar Estabelecimento</title>
+  </head>
+  <body>
+  <!--NAVBAR-->
+  {% include 'base/primary_base_2.html'%}
+  <!--FORM-->
+  {% include 'snippets/user/user_snippet_edit.html' %}
+  <!--END FORM-->
+  <footer class="bg-light text-center text-lg-start">
+  <!-- Copyright -->
+  <div class="text-center p-3" style="background-color: rgba(0, 0, 0, 0.2);">
+    Powered by:
+    <a class="text-dark" href="https://mdbootstrap.com/">Creative</a>
+  </div>
+  <!-- Copyright -->
+</footer>
+    <!--JAVA SCRIPT-->
+    <script src="{% static 'js/bootstrap.js'%}"></script>
+    <!----->
+  </body>
+</html>

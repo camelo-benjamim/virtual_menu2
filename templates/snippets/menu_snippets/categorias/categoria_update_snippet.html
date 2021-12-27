@@ -1,0 +1,38 @@
+{% load static %}
+
+        {% block content %}
+           
+        {% if itens %}
+        <div class="container-fluid text-center">
+        <div class=" d-flex justify-content-center">
+            <div class="col-sm-5 mt-4 pt-2 px-4 bg-light">
+            <h1>Categorias:</h1> 
+            <h4> Clique para remover <h4>
+        <ul class="col d-flex justify-content-center">
+            {% for cat in itens %}
+            
+             <div class="card my-1 mx-2 bg-light row d-flex justify-content-center" style="width: 18rem; height:auto;"> 
+            
+            <div class="card-body">
+                <h4 class="text-center">{{cat.text}}</h4>   
+            </div>
+            <form action="/editar_categoria/{{cat.text}}/">
+               <input type="submit" class="btn btn-primary" value="Editar">
+            </form>
+            </div>
+            {% endfor %}
+        </ul>
+        </div>
+        {% else %}
+        <div class="container-fluid text-center">
+            <div class=" d-flex justify-content-center">
+                <div class="col-sm-5 mt-4 pt-2 px-4">
+                <h1>Categorias:</h1> 
+            
+            <h5>Voce ainda nao criou nenhuma categoria, clique abaixo para adicionar:<h5>
+            <a class="btn btn-success my-3" href="./adicionar_categoria" role="button">Adicionar Categoria</a>
+        {% endif %} 
+        {% endblock %}
+    </div>
+    </div>
+</div>

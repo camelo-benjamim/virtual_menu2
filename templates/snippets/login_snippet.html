@@ -1,0 +1,20 @@
+{% load static %}
+{% load crispy_forms_tags %}
+    <div class="container"> 
+        <form action="." method="post" class="row d-flex justify-content-center my-5">
+
+            <!--EDIT STYLE-->
+                
+                
+                <div class="col-sm-4 mt-5 mb-5 pt-5 pb-2 px-5 bg-light border border-secondary">
+                    {{ form|crispy }}
+                    {% csrf_token %}
+                    <div class="text-center mt-1">
+                        <input class="btn btn-primary my-4 px-3" type="submit" value="Login">
+                        </div>
+                        
+                </div>
+            
+        </form>
+        
+</div>

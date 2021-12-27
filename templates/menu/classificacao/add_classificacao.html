@@ -1,0 +1,36 @@
+<!doctype html>
+{%load static%}
+
+
+<html lang="pt-br">
+  <head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap CSS -->
+    <link rel="shortcut icon" href="{%static '/img/favicon.png' %}">
+    <link rel="stylesheet" href="{% static 'css/user.css' %}">
+
+    <title>Adicionar Categoria</title>
+  </head>
+  <body>
+    <!-- Just an image -->
+    <nav class="navbar navbar-dark bg-dark">
+        <div class="container">
+            <a class="navbar-brand" href="#">
+            <img src="{{user.logo.url}}" width="40">
+            </a>
+        </div>
+    </nav>
+    <!--ADD CODE-->
+    {% include 'snippets/menu_snippets/categorias/add_categoria.html' %}
+    <!--FOOTER DIV-->
+
+    {% include 'footer/fixed_position_footer.html' %}
+
+  <!--JAVA SCRIPT-->
+  <script src="{% static 'js/bootstrap.js'%}"></script>
+  <!----->
+  </body>
+</html>
