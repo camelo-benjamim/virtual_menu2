@@ -9,7 +9,7 @@ https://docs.djangoproject.com/en/3.2/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/3.2/ref/settings/
 """
-##web: gunicorn virtual_menu.wsgi
+##
 import os
 from pathlib import Path
 import django_on_heroku
