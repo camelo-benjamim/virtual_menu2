@@ -1,1 +1,1 @@
-web: gunicorn virtual_menu.wsgi --log-file-
+web: gunicorn virtual_menu.wsgi:virtual_menu --log-file - --log-level debug
