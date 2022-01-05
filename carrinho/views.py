@@ -77,7 +77,7 @@ def cardapio_carrinho(request,mesa):
         session_key = request.COOKIES[settings.SESSION_COOKIE_NAME]
     except:
         request.session.create()
-        request.session['mesa'] = mesa
+        request.session['mesa'] = str(mesa.description)
     session_key = request.session.session_key
     print("PRINTANDO A SESSAO NOVA")
     print(session_key)
@@ -156,9 +156,17 @@ def cardapio(request):
                         
                 ## CASO N EXISTA UM CART, SERÁ RETORNADO A ESSA FUNÇAO QUE DELETA O PEDIDO (CASO N EXISTA UM CART)     
                 except:
-                    pedido_a_deletar = Pedido.objects.filter(session_key=session_key,item=item_adicionar,concluido=False)
-                    for p in pedido_a_deletar:
-                        p.delete()
+                    mesa_identificacao = request.session['mesa']
+                    mesa = get_object_or_404(Mesa,description=mesa_identificacao)
+                    novo_cart = Cart.objects.create(mesa_pedido=mesa)
+                    pedido_a_adicionar = Pedido.object.filter(session_key=session_key,item=item_adicionar,concluido=False)
+                    for i in pedido_a_adicionar:
+                        novo_cart.pedido.add(pedido_a_adicionar)
+                        
+                    return redirect('/cardapio/')
+                    ##pedido_a_deletar = Pedido.objects.filter(session_key=session_key,item=item_adicionar,concluido=False)
+                    ##for p in pedido_a_deletar:
+                    ##    p.delete()
                     
                     ## RETORNA PARA ESCANEAR O QR CODE
                     messages.info(request, 'POR FAVOR, ESCANEIEI O QR CODE PARA QUE O SISTEMA IDENTIFIQUE SUA MESA!')
@@ -168,7 +176,7 @@ def cardapio(request):
         except:
             ## RETORNA O ERRO CASO N EXISTA SESSION KEY PARA O CLIENTE ESCANEAR O QR CODE AO LADO (NA MESA)
             print("sessao inexistente")
-            messages.info(request, 'POR FAVOR, ESCANEIEI O QR CODE PARA QUE O SISTEMA IDENTIFIQUE SUA MESA! sz')      
+            messages.info(request, 'POR FAVOR, ESCANEIEI O QR CODE PARA QUE O SISTEMA IDENTIFIQUE SUA MESA!')      
             return redirect('/cardapio/')
 
 
