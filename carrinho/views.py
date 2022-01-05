@@ -154,14 +154,12 @@ def cardapio(request):
                         
                 ## CASO N EXISTA UM CART, SERÁ RETORNADO A ESSA FUNÇAO QUE DELETA O PEDIDO (CASO N EXISTA UM CART)     
                 except:
-                    cart_anterior = Cart.objects.filter(session_key=session_key,concluido=True, finalizado=True).last()
-                    mesa = cart_anterior.mesa_pedido
                     pedido_a_deletar = Pedido.objects.filter(session_key=session_key,item=item_adicionar,concluido=False)
                     for p in pedido_a_deletar:
                         p.delete()
                     
                     ## RETORNA PARA ESCANEAR O QR CODE
-                    messages.info(request, str(mesa) + ' mesa anterior')
+                    messages.info(request, 'POR FAVOR, ESCANEIEI O QR CODE PARA QUE O SISTEMA IDENTIFIQUE SUA MESA!')
                     
                 return redirect('/cardapio/')
             
