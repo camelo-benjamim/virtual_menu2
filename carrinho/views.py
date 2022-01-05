@@ -77,7 +77,6 @@ def cardapio_carrinho(request,mesa):
         session_key = request.COOKIES[settings.SESSION_COOKIE_NAME]
     except:
         request.session.create()
-        request.session['mesa'] = str(mesa.description)
     session_key = request.session.session_key
     print("PRINTANDO A SESSAO NOVA")
     print(session_key)
@@ -135,7 +134,6 @@ def cardapio(request):
                 pedido_exist.save()
                 print(str(nova_quantidade))
                 return redirect('/cardapio/')
-            
             except:
                 ## CASO N EXISTA SERÁ CRIADO UM NOVO PEDIDO
                 novo_pedido = Pedido.objects.create(item=item_adicionar,quantidade=quantidade,session_key=session_key,concluido=False)
@@ -156,27 +154,21 @@ def cardapio(request):
                         
                 ## CASO N EXISTA UM CART, SERÁ RETORNADO A ESSA FUNÇAO QUE DELETA O PEDIDO (CASO N EXISTA UM CART)     
                 except:
-                    mesa_identificacao = request.session['mesa']
-                    mesa = get_object_or_404(Mesa,description=mesa_identificacao)
-                    novo_cart = Cart.objects.create(mesa_pedido=mesa)
-                    pedido_a_adicionar = Pedido.object.filter(session_key=session_key,item=item_adicionar,concluido=False)
-                    for i in pedido_a_adicionar:
-                        novo_cart.pedido.add(pedido_a_adicionar)
-                        
-                    return redirect('/cardapio/')
-                    ##pedido_a_deletar = Pedido.objects.filter(session_key=session_key,item=item_adicionar,concluido=False)
-                    ##for p in pedido_a_deletar:
-                    ##    p.delete()
+                    cart_anterior = Cart.objects.filter(session_key=session_key,concluido=True, finalizado=True).last()
+                    mesa = cart_anterior.mesa_pedido
+                    pedido_a_deletar = Pedido.objects.filter(session_key=session_key,item=item_adicionar,concluido=False)
+                    for p in pedido_a_deletar:
+                        p.delete()
                     
                     ## RETORNA PARA ESCANEAR O QR CODE
-                    messages.info(request, 'POR FAVOR, ESCANEIEI O QR CODE PARA QUE O SISTEMA IDENTIFIQUE SUA MESA!')
+                    messages.info(request, str(mesa) + ' mesa anterior')
                     
                 return redirect('/cardapio/')
             
         except:
             ## RETORNA O ERRO CASO N EXISTA SESSION KEY PARA O CLIENTE ESCANEAR O QR CODE AO LADO (NA MESA)
-            print("sessao inexistente")
-            messages.info(request, 'POR FAVOR, ESCANEIEI O QR CODE PARA QUE O SISTEMA IDENTIFIQUE SUA MESA!')      
+            messages.info(request, 'POR FAVOR, ESCANEIEI O QR CODE PARA QUE O SISTEMA IDENTIFIQUE SUA MESA!')
+                    
             return redirect('/cardapio/')
 
 
