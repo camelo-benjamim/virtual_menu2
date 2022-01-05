@@ -77,6 +77,7 @@ def cardapio_carrinho(request,mesa):
         session_key = request.COOKIES[settings.SESSION_COOKIE_NAME]
     except:
         request.session.create()
+        request.session['mesa'] = mesa
     session_key = request.session.session_key
     print("PRINTANDO A SESSAO NOVA")
     print(session_key)
@@ -134,6 +135,7 @@ def cardapio(request):
                 pedido_exist.save()
                 print(str(nova_quantidade))
                 return redirect('/cardapio/')
+            
             except:
                 ## CASO N EXISTA SERÁ CRIADO UM NOVO PEDIDO
                 novo_pedido = Pedido.objects.create(item=item_adicionar,quantidade=quantidade,session_key=session_key,concluido=False)
@@ -165,8 +167,8 @@ def cardapio(request):
             
         except:
             ## RETORNA O ERRO CASO N EXISTA SESSION KEY PARA O CLIENTE ESCANEAR O QR CODE AO LADO (NA MESA)
-            messages.info(request, 'POR FAVOR, ESCANEIEI O QR CODE PARA QUE O SISTEMA IDENTIFIQUE SUA MESA!')
-                    
+            print("sessao inexistente")
+            messages.info(request, 'POR FAVOR, ESCANEIEI O QR CODE PARA QUE O SISTEMA IDENTIFIQUE SUA MESA!')      
             return redirect('/cardapio/')
 
 
