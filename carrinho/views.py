@@ -78,9 +78,12 @@ def cardapio_carrinho(request,mesa):
     except:
         request.session.create()
     session_key = request.session.session_key
+    request.session['mesa_session'] = mesa.description
     print("PRINTANDO A SESSAO NOVA")
     print(session_key)
     print("SESSAO ACIMA")
+    print("MESA COOKIE")
+    print(request.session['mesa_session'])
     cart = Cart.objects.filter(session_key=session_key,concluido=False)
     try:
         ##FORÇAR O ERRO
@@ -109,14 +112,22 @@ def cardapio(request):
             quantidade_cart = 0
             for i in produtos2:
                 quantidade_cart += 1
+            lista_itens = []
+            for i in produtos2:
+                lista_itens.append(i.item.item_nome)
+            print("LISTA ITENS ABAIXO:")
+            print(lista_itens)
                 
         except:
             print("DEU ERRO CABRA")
+            lista_itens = []
             quantidade_cart = 0
-        context = {'categorias':categorias,'produtos':produtos,'form':form, 'quantidade_cart': quantidade_cart,}        
+        context = {'categorias':categorias,'produtos':produtos,'form':form, 'quantidade_cart': quantidade_cart,'lista_itens':lista_itens,}        
         return render(request,'pedidos/cliente/cardapio.html',context=context)
     else:
+        print("MÉTODO POST")
         try:
+            print("TENTANDO ADICIONAR")
             ##VERIFICA SE EXISTE SESSION KEY
             ### CASO N EXISTA SERÁ RETORNADO UM ERRO NA FORMA DE ALERT 
             item = request.POST.get("item")
@@ -138,7 +149,7 @@ def cardapio(request):
                 ## CASO N EXISTA SERÁ CRIADO UM NOVO PEDIDO
                 novo_pedido = Pedido.objects.create(item=item_adicionar,quantidade=quantidade,session_key=session_key,concluido=False)
                 novo_pedido.save()
-                
+                print("NOVO PEDIDO FEITO")
                 ### VERIFICA A EXISTENCIA DE UM CART
                 ## CASO N EXISTA UM CART O PRODUTO SERÁ CRIADO PORÉM SERÁ DELETAADO AUTOMATICAMENTE
                 cart = Cart.objects.filter(session_key=session_key,concluido=False)
@@ -154,17 +165,26 @@ def cardapio(request):
                         
                 ## CASO N EXISTA UM CART, SERÁ RETORNADO A ESSA FUNÇAO QUE DELETA O PEDIDO (CASO N EXISTA UM CART)     
                 except:
-                    pedido_a_deletar = Pedido.objects.filter(session_key=session_key,item=item_adicionar,concluido=False)
-                    for p in pedido_a_deletar:
+                    
+                    print("caiu na excessao")
+                    mesa_session = request.session['mesa_session']
+                    print(mesa_session)
+                    mesa = get_object_or_404(Mesa,description=mesa_session)
+                    novo_cart = Cart.objects.create(session_key=session_key,mesa_pedido=mesa)
+                    print("NOVO CART ADICIONADO...")
+                    pedido_a_adicionar = Pedido.objects.filter(session_key=session_key,concluido=False)
+                    for p in pedido_a_adicionar:
+                        novo_cart.pedido.add(p)
+                    ##PROCURANDO PELO ERRO
+                    pedidos_a_deletar = Pedido.objects.filter(session_key=session_key,concluido=False)
+                    for p in pedidos_a_deletar:
+                        print("UM OBJETO FOI DELETADO")
                         p.delete()
-                    
-                    ## RETORNA PARA ESCANEAR O QR CODE
-                    messages.info(request, 'POR FAVOR, ESCANEIEI O QR CODE PARA QUE O SISTEMA IDENTIFIQUE SUA MESA!')
-                    
                 return redirect('/cardapio/')
             
         except:
             ## RETORNA O ERRO CASO N EXISTA SESSION KEY PARA O CLIENTE ESCANEAR O QR CODE AO LADO (NA MESA)
+            ## ESSE ERRO SERÁ RETORNADO CASO O CLIENTE ENTRE DIRETAMENTE SEM ESCANEAR O QR CODE, O ERRO SERÁ RETORNADO PROPOSITALMENTE...
             messages.info(request, 'POR FAVOR, ESCANEIEI O QR CODE PARA QUE O SISTEMA IDENTIFIQUE SUA MESA!')
                     
             return redirect('/cardapio/')

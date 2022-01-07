@@ -12,7 +12,6 @@ https://docs.djangoproject.com/en/3.2/ref/settings/
 ##
 import os
 from pathlib import Path
-import django_on_heroku
 from decouple import config
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -62,10 +61,6 @@ INSTALLED_APPS = [
     
        
 ]
-
-X_FRAME_OPTIONS = 'SAMEORIGIN'
-SILENCED_SYSTEM_CHECKS = ['security.W019']
-
 
 MIDDLEWARE = [
     ## CURRENT USER
@@ -168,4 +163,4 @@ AUTH_USER_MODEL = "accounts.User"
 LOGIN_REDIRECT_URL = '/cardapio/pedidos/'
 LOGOUT_REDIRECT_URL = '/'
 
-django_on_heroku.settings(locals())
+
