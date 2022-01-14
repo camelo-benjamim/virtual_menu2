@@ -29,7 +29,7 @@ SECRET_KEY = 'django-insecure-%t^icwtx(^6bqz)7kch*@ifvfv60m4()g2)^1chn-2p8vihi6g
 ### ----
     ### RODANDO LOCALMENTE
     ### SERVIDOR TESTE:
-DEBUG = True
+DEBUG = False
     ### QUANDO FOR OFICIAL
     ### COLOCAR O DEBUG ABAIXO
     
@@ -37,13 +37,14 @@ DEBUG = True
 
 ### UP
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['*']
 
 
 # Application definition
 
 INSTALLED_APPS = [
     ##MEUS APLICATIVOS
+    ##'whitenoise.runserver_nostatic',
     'accounts',
     'menu',
     'mesa',
@@ -55,10 +56,13 @@ INSTALLED_APPS = [
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
-    'django.contrib.staticfiles',
+    ##static test
+    'whitenoise.runserver_nostatic',
+    
     ##APLICATIVOS DE TERCEIROS:
         ##FORMULÁRIOS
     'crispy_forms',
+    
     
        
 ]
@@ -74,6 +78,7 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     ## CURRENT USER
     'django_currentuser.middleware.ThreadLocalUserMiddleware',
+    
     ##
 ]
 
@@ -147,10 +152,10 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/3.2/howto/static-files/
 
-STATIC_URL = "/static/"
+STATIC_URL = '/static/'
 #Location of static files
-STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static'), ]
-STATIC_ROOT  = BASE_DIR / "staticfiles"
+STATIC_ROOT = BASE_DIR / 'staticfiles'
+##STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static'), ]
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 # Default primary key field type
 # https://docs.djangoproject.com/en/3.2/ref/settings/#default-auto-field
