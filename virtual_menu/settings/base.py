@@ -58,7 +58,6 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     ##static test
     'whitenoise.runserver_nostatic',
-    
     ##APLICATIVOS DE TERCEIROS:
         ##FORMULÁRIOS
     'crispy_forms',
