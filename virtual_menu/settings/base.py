@@ -56,8 +56,7 @@ INSTALLED_APPS = [
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
-    ##static test
-    'whitenoise.runserver_nostatic',
+    'django.contrib.staticfiles',
     ##APLICATIVOS DE TERCEIROS:
         ##FORMULÁRIOS
     'crispy_forms',
@@ -67,6 +66,7 @@ INSTALLED_APPS = [
 ]
 
 MIDDLEWARE = [
+    'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
@@ -155,7 +155,9 @@ STATIC_URL = '/static/'
 #Location of static files
 STATIC_ROOT = BASE_DIR / 'staticfiles'
 ##STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static'), ]
-STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
+
+STATICFILES_STORAGE = 'whitenoise.storage.CompressedStaticFilesStorage' 
+
 # Default primary key field type
 # https://docs.djangoproject.com/en/3.2/ref/settings/#default-auto-field
 

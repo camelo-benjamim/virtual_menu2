@@ -1,0 +1,25 @@
+@import url("bootstrap.e76579c8568a.css");
+h1 {
+    text-align: center;
+    margin-top: 5px;
+}
+
+h2 {
+    text-align: center;
+    padding-bottom: 10px;
+}
+
+.bg-success {
+    background-color: rgba(0, 127, 0, .5) !important;
+}
+
+.list-group {
+    margin-left: 50px;
+    margin-right: 50px;
+}
+
+#pedidos {
+    margin-top: 65px;
+    padding-top: 20px;
+    padding-bottom: 10px;
+}
