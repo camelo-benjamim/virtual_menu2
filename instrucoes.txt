@@ -1,0 +1,7 @@
+Para o funcionamento correto dessa aplicação, você necessita de:
+
+conta no heroku configurada...
+veja os dynos e comandos em caso de dúvida
+amazon aws..
+usar este video em caso de dúvidas (sobre aws): 
+https://www.youtube.com/watch?v=_Rsclg1FpPY
