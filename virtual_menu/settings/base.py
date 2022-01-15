@@ -181,10 +181,10 @@ MEDIA_URL = '/media/'
 # Path where media is stored
 MEDIA_ROOT = BASE_DIR / 'media'
 
-##AWS_ACCESS_KEY_ID = 'AKIA5KNEFXSVOL5YTNVP'
-##AWS_SECRET_ACCESS_KEY = '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'
-##AWS_STORAGE_BUCKET_NAME = 'alemao'
+AWS_ACCESS_KEY_ID = 'AKIA5KNEFXSVOL5YTNVP'
+AWS_SECRET_ACCESS_KEY = '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'
+AWS_STORAGE_BUCKET_NAME = 'yoshi-temakeria'
 
-##AWS_S3_FILE_OVERWRITE = False
-##AWS_DEFAULT_ACL = None
-##DEFAULT_FILE_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
+AWS_S3_FILE_OVERWRITE = False
+AWS_DEFAULT_ACL = None
+DEFAULT_FILE_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
