@@ -21,7 +21,7 @@ class Item(models.Model):
     classificacao = models.ForeignKey(Item_classificacao,on_delete=models.CASCADE,default=None)
     descricao = models.CharField(null=True,default=True,max_length=50)
     preco = models.DecimalField(decimal_places=2,max_digits=10)
-    img = models.ImageField(upload_to = 'logo/logo_produtos/',null=True,blank=True, default=None)
+    img = models.ImageField(upload_to = 'images/',null=True,blank=True, default=None)
     
     class Meta:
         verbose_name_plural = "Itens"
