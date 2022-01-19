@@ -176,10 +176,6 @@ def cardapio(request):
                     for p in pedido_a_adicionar:
                         novo_cart.pedido.add(p)
                     ##PROCURANDO PELO ERRO
-                    pedidos_a_deletar = Pedido.objects.filter(session_key=session_key,concluido=False)
-                    for p in pedidos_a_deletar:
-                        print("UM OBJETO FOI DELETADO")
-                        p.delete()
                 return redirect('/cardapio/')
             
         except:
