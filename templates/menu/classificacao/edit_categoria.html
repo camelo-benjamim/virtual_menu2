@@ -12,7 +12,7 @@
     <link rel="shortcut icon" href="{%static '/img/favicon.png' %}">
     <link rel="stylesheet" href="{% static 'css/bootstrap.css' %}">
 
-    <title>Adicionar Categoria</title>
+    <title>Editar sub-categoria</title>
   </head>
   <body>
     <!-- Just an image -->
@@ -28,11 +28,12 @@
         <div class=" d-flex justify-content-center">
             <!--PASS CATEGORY IN {{TEXT}}-->
           <form action="/editar_categoria/{{post.text}}/" method="post" class="col-sm-4 mt-5 mb-5 pt-3 pb-2 px-5 bg-light border border-secondary" enctype="multipart/form-data">
-            <h1 class="text-center"> Editar Categoria: </h1>
+            <h1 class="text-center"> Editar sub-categoria: </h1>
               {% csrf_token %}
              
               <div class="my-2">
                 {{form.text|as_crispy_field}}
+                {{form.classificacao|as_crispy_field}}
               </div>
               {% if messages %}
         
@@ -51,7 +52,7 @@
         <div>
 
     <!--FOOTER DIV-->
-    {% include 'footer/fixed_position_footer.html' %}
+    {% include 'footer/fixed_position_footer_dark.html' %}
     <!--JAVA SCRIPT-->
     <script src="{% static 'js/bootstrap.js'%}"></script>
     <!----->

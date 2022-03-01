@@ -31,6 +31,8 @@ urlpatterns = [
     path('mesa/',include ('mesa.urls')),
     path('pagamento/',include('pagamento.urls')),
     path('cardapio/',include('carrinho.urls')),
+    path('relatorios/',include('relatorios.urls')),
+    path('push/',include('push.urls')),
     
     ##ADICIONAR MAIN VIEW
 ] + static(settings.MEDIA_URL, document_root = settings.MEDIA_ROOT) + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)

@@ -5,14 +5,14 @@ from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 
 
-##CATEGORIAS
+##CATEGORIAS:
 
-###MOSTRA TODAS AS CATEGORIAS
+###MOSTRA TODAS AS SUPERCATEGORIAS
 @login_required
 def menuView(request):
     user_status = get_object_or_404(User, pk=request.user.id)
     boolean_statuses = user_status.main
-    categoria = Item_classificacao.objects.all()
+    categoria = Classificacoes.objects.all()
     quantidade = 0
     for i in categoria:
         quantidade += 1
@@ -22,7 +22,23 @@ def menuView(request):
 
     return render(request,'menu/classificacao/menu.html',context=context)
 
+###MOSTRA TODAS AS CATEGORIAS
+@login_required
+def categoriasView(request,superCat):
+    user_status = get_object_or_404(User, pk=request.user.id)
+    boolean_statuses = user_status.main
+    superClassificacao = get_object_or_404(Classificacoes, nome_classificacao=superCat)
+    categoria = Item_classificacao.objects.filter(classificacao=superClassificacao)
+    quantidade = 0
+    for i in categoria:
+        quantidade += 1
+    context = {
+        'categorias' : categoria, 'status': boolean_statuses,'quantidade': quantidade,
+    }
 
+    return render(request,'menu/classificacao/subcategoria.html',context=context)
+
+###CRIAR MÉTODOS E TEMPLATES PARA ADICIONAR,REMOVER E EDITAR SUPERCAT
 ###ADICIONA CATEGORIAS 
 @login_required
 def addCategoria(request):
@@ -52,6 +68,34 @@ def addCategoria(request):
         messages.info(request, 'Seu usuário não possui acesso a edição de dados!')
         return redirect ('/')
     
+###ADICIONA SUPERCATEGORIAS 
+@login_required
+def addSuperCategoria(request):
+    
+    user_status = get_object_or_404(User, pk=request.user.id)
+    boolean_statuses = user_status.main
+    if boolean_statuses == True:
+        if request.method == "GET":
+            form = FormClassificacoes()
+            context = {
+                'form': form,
+                'status': boolean_statuses,
+            }
+            return render (request,'menu/classificacao/add_superclassificacao.html',context=context)
+        
+        else:
+            form = FormClassificacoes(request.POST,request.FILES)
+            if form.is_valid():
+                form.save()
+                return redirect('/meus_produtos/')
+                
+            else:
+                context = {'form': form,}
+                return render(request,'menu/classificacao/add_classificacoes.html',context=context)
+
+    else:
+        messages.info(request, 'Seu usuário não possui acesso a edição de dados!')
+        return redirect ('/')
 ### DELETAR CATEGORIA
 @login_required
 def deleteCategoria(request,categoria):
@@ -64,7 +108,18 @@ def deleteCategoria(request,categoria):
         messages.info(request, 'Seu usuário não possui acesso a edição de dados!')
         return redirect ('/')
 
-   
+### DELETAR SUPERCATEGORIA
+@login_required
+def deleteSuperCategoria(request,super_categoria):
+    user_status = get_object_or_404(User, pk=request.user.id)
+    boolean_statuses = user_status.main
+    if boolean_statuses == True:
+        categorias = get_object_or_404(Classificacoes, nome_classificacao=super_categoria).delete()
+        return redirect ('/meus_produtos/')
+    else:
+        messages.info(request, 'Seu usuário não possui acesso a edição de dados!')
+        return redirect ('/')
+
 ### ATUALIZAR A CATEGORIA (COM NOVOS VALORES)
 @login_required
 def updateCategoria(request,categoria):
@@ -78,6 +133,7 @@ def updateCategoria(request,categoria):
             if(form.is_valid()):
                     post = form.save(commit=False)
                     post.text = form.cleaned_data['text']
+                    post.classificacao = form.cleaned_data['classificacao']
                     post.save()
                     return redirect('/meus_produtos/')
     else:
@@ -89,6 +145,29 @@ def updateCategoria(request,categoria):
     context = {'form': form,'post':post,}
     return render(request,'menu/classificacao/edit_categoria.html',context=context)
     
+###ATUALIZAR SUPER-CATEGORIA
+@login_required
+def updateSuperCategoria(request,super_categoria):
+    user_status = get_object_or_404(User, pk=request.user.id)
+    boolean_statuses = user_status.main
+    if boolean_statuses == True:
+        post = get_object_or_404(Classificacoes, nome_classificacao=super_categoria)
+        form = FormClassificacoes(instance=post)
+        if(request.method == 'POST'):
+            form = FormClassificacoes(request.POST,request.FILES, instance=post)
+            if(form.is_valid()):
+                    post = form.save(commit=False)
+                    post.nome_classificacao = form.cleaned_data['nome_classificacao']
+                    post.save()
+                    return redirect('/meus_produtos/')
+    else:
+        messages.info(request, 'Seu usuário não possui acesso a edição de dados!')
+        return redirect ('/')
+            
+            
+       
+    context = {'form': form,'post':post,}
+    return render(request,'menu/classificacao/edit_super_categoria.html',context=context)
 
 
 ###EXIBIR PRODUTOS DE ACORDO COM SUA CATEGORIA
@@ -144,7 +223,6 @@ def editarProduto(request,produto):
             if(form.is_valid()):
                     post = form.save(commit=False)
                     post.item_nome = form.cleaned_data['item_nome']
-                    post.componentes = form.cleaned_data['componentes']
                     post.classificacao = form.cleaned_data['classificacao']
                     post.descricao = form.cleaned_data['descricao']
                     post.preco = form.cleaned_data['preco']

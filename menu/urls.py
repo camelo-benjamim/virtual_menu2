@@ -5,7 +5,13 @@ from menu.views import *
 urlpatterns = [
     ## VIEWS DO USUÁRIO
     ###CATEGORIAS
+    ##SUPER
     path('meus_produtos/',menuView, name='adm_view'),
+    path('adicionar_super_categoria/',addSuperCategoria),
+    path('remover_super_categoria/<str:super_categoria>/',deleteSuperCategoria),
+    path('editar_super_categoria/<str:super_categoria>/', updateSuperCategoria),
+    ##SUB
+    path('sub_categoria/<str:superCat>/',categoriasView),
     path('adicionar_categoria/',addCategoria),
     path('remover_categoria/<str:categoria>/',deleteCategoria),
     path('editar_categoria/<str:categoria>/', updateCategoria),

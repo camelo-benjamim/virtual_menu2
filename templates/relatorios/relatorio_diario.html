@@ -1,0 +1,55 @@
+<!doctype html>
+{% load static%}
+<html lang="pt-br">
+  <head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!-- Bootstrap CSS -->
+    <link rel="shortcut icon" href="{%static '/img/favicon.png' %}">
+    <link href="{% static '/css/bootstrap.css' %}" rel="stylesheet">
+
+    <title>Relatório diário</title>
+  </head>
+  <body>
+    <!--START NAVBAR-->
+    {% include 'base/dark_base.html' %}
+    <h1 class="my-2 text-center text-danger">Relatório diário: </h1>
+    <h2 class="my-2 text-center">Finanças: </h2> 
+    <div class="row justify-content-center">
+        <div class="card mx-2 my-2" style="width: 18rem;">
+            <div class="card-body">
+              <h5 class="card-title text-center">Total apurado: </h5>
+              <h1 class="card-title text-center text-success"> R$ {{total_apurado}} </h1>
+            </div>
+          </div>
+
+          <div class="card mx-2 my-2" style="width: 18rem;">
+            <div class="card-body">
+              <h5 class="card-title text-center">Total atendimentos: </h5>
+              <h1 class="card-title text-center text-success">{{atendimentos}} </h1>
+            </div>
+          </div>
+          {% if not atendimentos == 0 %}
+          <h2 class="text-center my-2 text-danger">Comandas:</h2>
+          <div class="row justify-content-center">
+          {% for pedido in relatorio_diario %}
+            <div class="card mx-2" style="width: 18rem;">
+              
+              <div class="card-body">
+                <h5 class="card-title text-center">{{pedido.mesa_pedido}}</h5>
+                <h3 class="text-center">{{pedido.data_do_pedido}}</h3>
+                <div class="row justify-content-center">
+                  <a href="../comanda/{{pedido.pk}}/" class="btn btn-primary text-center">Ver comanda</a>
+                </div>
+              </div>
+            </div>
+            {% endfor %}
+          </div>
+          {% endif %}
+          
+    <script src="{% static 'js/bootstrap.js'%}"></script>
+    <!----->
+  </body>
+</html>

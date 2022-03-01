@@ -1,0 +1,20 @@
+{% load static %}
+{% load crispy_forms_tags %}
+
+
+<div class=" d-flex justify-content-center">
+    <form action="/adicionar_super_categoria/" method="post" class="col-sm-4 mt-5 mb-5 pt-3 pb-2 px-5 bg-light border border-secondary" enctype="multipart/form-data">
+      <h1 class="text-center"> Adicionar Categoria: </h1>
+        {% csrf_token %}
+        <div class="my-2">
+          {{form.nome_classificacao|as_crispy_field}}
+          
+        </div>
+          </div>
+        <div class="col text-center">
+          <button type="submit" class="btn btn-success my-2"  method="post" >Salvar</button>
+        </div>
+    </form>
+  
+
+

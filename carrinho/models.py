@@ -27,6 +27,11 @@ class Cart(models.Model):
     session_key = models.TextField()
     concluido = models.BooleanField(default=False)
     finalizado = models.BooleanField(default=False,null=True)
+    pedido_data_relatorio = models.DateField(auto_now_add=True,null=True)
+    
+    class Meta:
+        verbose_name = "Carrinho"
+        verbose_name_plural = "Carrinhos"
 
     
     def __str__(self):

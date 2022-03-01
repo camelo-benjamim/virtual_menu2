@@ -11,7 +11,9 @@
                             <img src="{{prod.img.url}}" class="card-img-top" alt="..." >
                             <div class="card-body">
                               <h4 class="card-title">{{prod.item_nome}}</h4>
+                              {% if not prod.descricao == None or ""%}
                               <h6 class="card-subtitle mb-2 text-muted">{{prod.descricao}}</h6>
+                              {% endif %}
                               <h5 class="card-subtitle mb-2 text-muted">R$ {{prod.preco}}</h5>
                             {% if status == True %}
                               <a class="btn btn-dark" href="#" role="button" id="dropdownMenuLink" data-bs-toggle="dropdown" aria-expanded="false">
@@ -30,7 +32,9 @@
                             
                             <div class="card-body">
                               <h4 class="card-title">{{prod.item_nome}}</h4>
+                              {% if not prod.descricao == None or "" %}
                               <h6 class="card-subtitle mb-2 text-muted">{{prod.descricao}}</h6>
+                              {% endif %}
                               <h5 class="card-subtitle mb-2 text-muted">R$ {{prod.preco}}</h5>
                                 
                               {% if status == True %}

@@ -46,11 +46,11 @@
                         <div class="card mt-2 mb-4 mx-2" style="width: 18rem;">
                             
                             <div class="card-body">
-                              {% if pedido.item..img %}
+                              {% if pedido.item.img %}
                               <img src="{{pedido.item.img.url}}" class="card-img-top" alt="...">
                               {% endif %}
-                              <h4 class="card-title ">{{pedido.item}}</h4>
-                              <h4 class="card-title "> Quantidade: {{pedido.quantidade}} </h4>
+                              <h3 class="card-title mt-1">{{pedido.item}}</h3>
+                              <h4 class="card-title "> Quantidade: <strong class="text-danger">{{pedido.quantidade}}</strong> </h4>
                             </div>
                         </div>
 

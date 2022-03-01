@@ -45,6 +45,8 @@ class User(AbstractUser):
     number_ref = models.SmallIntegerField(default=0)
     contacts_phone = models.BigIntegerField(unique=True,default=0)
     main = models.BooleanField(default=False)
+    USERNAME_FIELD = 'username'
+    REQUIRED_FIELDS = ['first_name','last_name','email','companysname','postal_code','city','state','address','district','number_ref','contacts_phone','main',]
 
     def __str__(self):
         return self.companysname

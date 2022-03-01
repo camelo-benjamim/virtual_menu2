@@ -9,8 +9,8 @@
                         <div class="card my-2 mx-2" style="width: 18rem;">
                             
                             <div class="card-body">
-                              <h4 class="card-title">{{cat.text}}</h4>
-                              <a class="btn btn-primary my-1" href="/produtos_por_categoria/{{cat.text}}/">Visualizar</a>
+                              <h4 class="card-title">{{cat.nome_classificacao}}</h4>
+                              <a class="btn btn-primary my-1" href="/sub_categoria/{{cat.nome_classificacao}}/">Visualizar</a>
                               {% if status == True %}
                               <a class="btn btn-dark" href="#" role="button" id="dropdownMenuLink" data-bs-toggle="dropdown" aria-expanded="false">
                                 Modificar 
@@ -18,8 +18,8 @@
                             </a>
                           
                             <ul class="dropdown-menu" aria-labelledby="dropdownMenuLink">
-                              <li><a class="dropdown-item" href="/editar_categoria/{{cat.text}}/">Editar categoria</a></li>
-                              <li><a class="dropdown-item bg-danger text-light" href="/remover_categoria/{{cat.text}}/">Remover categoria</a></li>
+                              <li><a class="dropdown-item" href="/editar_super_categoria/{{cat.nome_classificacao}}/">Editar categoria</a></li>
+                              <li><a class="dropdown-item bg-danger text-light" href="/remover_super_categoria/{{cat.nome_classificacao}}/">Remover categoria</a></li>
                             </ul>
                             </div>
                         </div>
@@ -28,7 +28,7 @@
                         <div class="d-flex justify-content-center my-3">
                             <ul class="list-group d-flex justify-content-center">
                                 {% if status == True %}
-                                <a class="btn btn-success btn-lg my-1" href="/adicionar_categoria/">Adicionar Categoria</a>
+                                <a class="btn btn-success btn-lg my-1" href="/adicionar_super_categoria/">Adicionar Categoria</a>
                                 {% endif %}
                             </ul>
                         </div>
@@ -39,7 +39,7 @@
                 {% else %}
                 <div class="container-fluid text-center">
                 <h1>Categorias:</h1>
-                    <a class="btn btn-primary" href="/adicionar_categoria/">Adicionar Categoria</a>
+                    <a class="btn btn-primary" href="/adicionar_super_categoria/">Adicionar Categoria</a>
                 </div>
             </div>
     {% endif %} 

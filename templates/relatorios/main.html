@@ -1,0 +1,31 @@
+<!doctype html>
+{% load static%}
+<html lang="pt-br">
+  <head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!-- Bootstrap CSS -->
+    <link rel="shortcut icon" href="{%static '/img/favicon.png' %}">
+    <link href="{% static '/css/bootstrap.css' %}" rel="stylesheet">
+
+    <title>Relatórios</title>
+  </head>
+  <body>
+    <!--START NAVBAR-->
+    {% include 'base/dark_base.html' %}
+    <h1 class="my-2 text-center text-danger">Relatórios: </h1>
+    <div class="row justify-content-center">
+        <div class="container-sm text-center my-2">
+            <a class="btn btn-primary my-2" href="/relatorios/relatorio_dia/" role="button">Relatório diário</a>
+            <a class="btn btn-primary my-2" href="/relatorios/relatorio_mes/" role="button">Relatório mensal</a>
+            <a class="btn btn-primary my-2" href="/relatorios/relatorio_ano/" role="button">Relatório anual</a>
+        </div>
+       
+
+    </div>
+    <script src="{% static 'js/bootstrap.js'%}"></script>
+    <!----->
+  </body>
+</html>

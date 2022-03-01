@@ -9,7 +9,7 @@ urlpatterns = [
     path('meu_carrinho/',ver_carrinho),
     path('',cardapio),
     path('<str:mesa>/',cardapio_carrinho),
-    
+    path('super_categoria/<str:super_categoria>/',categoria_cookie),
     
     
 ]

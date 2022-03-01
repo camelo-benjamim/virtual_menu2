@@ -29,9 +29,16 @@
             </a>
           </div>
           </div>
-        
-        
     </nav>
+    <div class="navbar-nav-scroll bg-dark">
+      <ul class="navbar-nav bd-navbar-nav flex-row">
+        {% for super in super_categorias %}
+        <li class="nav-item mx-2 my-1">
+          <a class="nav-link text-light" href="/cardapio/super_categoria/{{super}}/" onclick="ga('send', 'event', 'Navbar', 'Community links', 'Bootstrap');">{{super}}</a>
+        </li>
+        {% endfor %}
+      </ul>
+    </div>
     <!--NEED DIV STYLE AND BUTTON TO SAVE!-->
     {% block content %}
     <div class="container text-center my-3">
@@ -50,10 +57,10 @@
         {%for i in categorias%}
         <div class="container">
           <div class="row justify-content-center">
-        <h2 class="text-center">{{i.text}}:</h2>
+        <h1 class="text-center">{{i.text}}:</h1>
         
         {% if produtos %}
-        {%for produto in produtos%}
+        {% for produto in produtos%}
         {%if produto.classificacao.text == i.text%}
         <div class="card my-2 mx-2" style="width: 18rem;">
           {% if produto.img %}
@@ -62,7 +69,9 @@
           <div class="card-body">
             
               <h4 class="card-title">{{produto.item_nome}}</h4>
+              {% if not produto.descricao == None or "" %}
               <h6 class="card-subtitle mb-2 text-muted">{{produto.descricao}}</h6>
+              {% endif %}
               <h5 class="card-subtitle mb-2 text-muted">R$ {{produto.preco}}</h5>
             
               {% if not produto.item_nome in lista_itens %}

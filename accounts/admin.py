@@ -9,7 +9,14 @@ class CustomUserAdmin(UserAdmin):
     list_filter  = ('postal_code',)
     search_fields = ('companysname',)
     ordering = ('companysname',)
+    readonly_fields = ['username','first_name','last_name','email','companysname','postal_code','city','state','address','district','number_ref','contacts_phone','main','last_login','is_active','date_joined','user_permissions','groups']
     
+    def has_add_permission(self, request,obj=None):
+        return False
+    def has_edit_permission(self,request,obj=None):
+        return True
+    def has_delete_permission(self, request,obj=None):
+        return True
 
 ##admin.site.register(Group)
 admin.site.register(User,CustomUserAdmin)

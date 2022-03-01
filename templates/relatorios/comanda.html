@@ -1,0 +1,46 @@
+<!doctype html>
+{% load static%}
+<html lang="pt-br">
+  <head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!-- Bootstrap CSS -->
+    <link rel="shortcut icon" href="{%static '/img/favicon.png' %}">
+    <link href="{% static '/css/bootstrap.css' %}" rel="stylesheet">
+
+    <title>Relatórios</title>
+  </head>
+  <body>
+    <!--START NAVBAR-->
+    {% include 'base/dark_base.html' %}
+    {% if error %}
+    <h1 class="text-center text-danger">Comanda: </h1>
+    {% else %}
+    <div class="container mt-3">
+        <h1 class="text-center my-2 text-danger">Detalhes da comanda: </h1>
+        <div class="row justify-content-center border border-dark mx-4 mt-1 mb-3">
+          <h3 class="text-center mt-2">data do pedido: <strong class="text-danger">{{data}}</strong></h3>
+          <h3 class="text-center mt-1">hora do pedido: <strong class="text-danger">{{hora}}</strong></h3>
+          <h3 class="text-center mt-1">mesa do pedido: <strong class="text-danger">{{mesa}}</strong></h3>
+          <h3 class="text-center mt-1">método de pagamento: <strong class="text-danger">{{metodo_pagamento}}</strong></h3>
+          <h3 class="text-center mt-1">valor total: <strong class="text-danger">{{valor_total}}</strong></h3>          
+          <h1 class="text-center my-3">Itens:</h1>
+          {% for i in pedidos%}
+          <div class="card my-2" style="width: 18rem;">
+            <div class="card-body">
+              <h5 class="card-title text-center">{{i.item.item_nome}}</h5>
+              <h3 class="card-text text-center text-danger">X {{i.quantidade}}<h3>
+              <h3 class="card-text text-center">Valor unidade: {{i.item.preco}}<h3>              
+            </div>
+          </div>
+          {% endfor %}
+        </div>
+    </div>
+    {% endif %}
+    
+    <script src="{% static 'js/bootstrap.js'%}"></script>
+    <!----->
+  </body>
+</html>

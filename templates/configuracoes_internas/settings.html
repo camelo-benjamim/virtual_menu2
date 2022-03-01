@@ -1,161 +1,188 @@
 <!doctype html>
-{%load static%}
+{% load static %}
 {% load crispy_forms_tags %}
-
 <html lang="pt-br">
-  <head>
-    <!-- Required meta tags -->
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <head>
+        <!-- Required meta tags -->
+        <meta charset="utf-8">
+        <meta name="viewport"
+              content="width=device-width, initial-scale=1, shrink-to-fit=no">
+        <!-- Bootstrap CSS -->
+        <link rel="shortcut icon" href="{% static '/img/favicon.png' %}">
+        <link rel="stylesheet" href="{% static 'css/bootstrap.css' %}">
+        <title>Configurações</title>
+    </head>
+    <body>
+        {% include 'base/settings_base.html' %}
+        <!--NEED DIV STYLE AND BUTTON TO SAVE!-->
+        {% block content %}
+            <div class="container">
+                <h2 class="text-center my-2">Selecione o que deseja modificar:</h2>
+                <h3 class="text-center my-3">Mesa:</h3>
+                <div class="container-fluid">
+                    <div class="row justify-content-center">
+                        <div class="card mx-2 my-2" style="width: 18rem;">
+                            <div class="card-body">
+                                <h5 class="card-title">Adicionar mesa</h5>
+                                <p class="card-text">
+                                    Cada mesa possui seu <strong>QRCODE</strong>, assim facilitando e automatizando o atendimento.
+                                </p>
+                                <div class="text-center">
+                                    <a href="/mesa/adicionar_mesa/" class="btn btn-success mt-5">Adicionar</a>
+                                </div>
+                            </div>
+                        </div>
 
-    <!-- Bootstrap CSS -->
-    <link rel="shortcut icon" href="{%static '/img/favicon.png' %}">
-    <link rel="stylesheet" href="{% static 'css/bootstrap.css' %}">
+                        <div class="card mx-2 my-2" style="width: 18rem;">
+                            <div class="card-body">
+                                <h5 class="card-title">Remover mesa</h5>
+                                <p class="card-text">
+                                    Ao remover uma mesa, lembre-se também de descartar o papel com o <strong>QRCODE</strong>
+                                </p>
+                                <div class="text-center">
+                                    <a href="/mesa/mesas/" class="btn btn-danger mt-5">Remover</a>
+                                </div>
+                            </div>
+                        </div>
 
-    <title>Configurações</title>
-  </head>
-  <body>
-    {% include 'base/settings_base.html'%}
-    <!--NEED DIV STYLE AND BUTTON TO SAVE!-->
-    {% block content %}
-    <div class="container">
-      <h2 class="text-center my-2">Selecione o que deseja modificar:</h2>
-
-      <h3 class="text-center my-3">Mesa:</h3>
-      <div class="container-fluid">
-        <div class="row justify-content-center">
-          <div class="card mx-2 my-2" style="width: 18rem;">
-           
-            <div class="card-body">
-              <h5 class="card-title">Adicionar mesa</h5>
-              <p class="card-text">Cada mesa possui seu <strong>QRCODE</strong>, assim facilitando e automatizando o atendimento.</p>
-              <div class="text-center">
-              <a href="/mesa/adicionar_mesa/" class="btn btn-success mt-5">Adicionar</a>
-              </div>
-            </div>
-          </div>
-
-          <div class="card mx-2 my-2" style="width: 18rem;">
-           
-            <div class="card-body">
-              <h5 class="card-title">Remover mesa</h5>
-              <p class="card-text">Ao remover uma mesa, lembre-se também de descartar o papel com o <strong>QRCODE</strong></p>
-              <div class="text-center">
-              <a href="/mesa/mesas/" class="btn btn-danger mt-5">Remover</a>
-              </div>
-            </div>
-          </div>
-
-          <div class="card mx-2 my-2" style="width: 18rem;">
-           
-            <div class="card-body">
-              <h5 class="card-title">Ver mesas</h5>
-              <p class="card-text">Ao clicar aqui você pode ver todas as mesas criadas por seu estebelecimento</p>
-              <div class="text-center">
-              <a href="/mesa/mesaConsult/" class="btn btn-primary mt-5">Ver mesas</a>
-              </div>
-            </div>
-          </div>
-
-          {% if status == True %}
-          
-          <h3 class="text-center my-3">Métodos de pagamento:</h3>
-          <div class="container-fluid">
-            <div class="row justify-content-center">
-    
-              <div class="card mx-2 my-2" style="width: 18rem;">
-               
-                <div class="card-body">
-                  <h5 class="card-title">Adicionar método de pagamento</h5>
-                  <p class="card-text">Adicionar um novo método de pagamento significa facilidade para seus clientes</p>
-                  <div class="text-center">
-                  <a href="/pagamento/adicionar_metodo_de_pagamento/" class="btn btn-success">Adicionar</a>
-                  </div>
-                </div>
-              </div>
-              
-              <div class="card mx-2 my-2" style="width: 18rem;">
-               
-                <div class="card-body">
-                  <h5 class="card-title">Remover método de pagamento</h5>
-                  <p class="card-text">Aṕós remover um método de pagamento verifique se existe pelo menos um restante</p>
-                  <div class="text-center">
-                  <a href="/pagamento/remover_metodo_de_pagamento/" class="btn btn-danger">Remover</a>
-                  </div>
-                </div>
-              </div>
-
-              <div class="card mx-2 my-2" style="width: 18rem;">
-               
-                <div class="card-body">
-                  <h5 class="card-title">Ver métodos de pagamento</h5>
-                  <p class="card-text">Ver todos os métodos de pagamentos já adicionados anteriormente</p>
-                  <div class="text-center">
-                  <a href="/pagamento/metodos_de_pagamento/" class="btn btn-primary">Ver métodos</a>
-                  </div>
-                </div>
-              </div>
-
-      {% endif %}
-      <h3 class="text-center my-3">Usuário:</h3>
-      <div class="container-fluid">
-        <div class="row justify-content-center">
-          <div class="card mx-2 my-2" style="width: 18rem;">
-           
-            <div class="card-body">
-              <h5 class="card-title">Editar dados do usuário atual</h5>
-              <p class="card-text">Você pode atualizar seus dados de cadastro, como email,numero para contato, nome de usuário e etc</p>
-              <div class="text-center">
-              <a href="/auth/edit/" class="btn btn-warning mt-5">Editar</a>
-              </div>
-            </div>
-          </div>
-
-          {% if status == True %}
-          <div class="card mx-2 my-2" style="width: 18rem;">
-           
-            <div class="card-body">
-              <h5 class="card-title">Adicionar novo usuário como filial</h5>
-              <p class="card-text">Ao adicionar um novo usuário, ele funcionará como uma filial do atual, compartilhando o mesmo cardápio</p>
-              <div class="text-center">
-              <a href="/auth/" class="btn btn-success mt-5">Adicionar</a>
-              </div>
-            </div>
-          </div>
-          
-          
-          <div class="card mx-2 my-2" style="width: 18rem;">
-           
-            <div class="card-body">
-              <h5 class="card-title">Remover o usuário atual</h5>
-              <p class="card-text">Ao remover o usuário atual, o histórico de pedidos será apagado e você terá que colocar outro usuário como sede manualmente, caso tenha alguma dúvida contate o suporte</p>
-              <div class="text-center">
-              <a href="/auth/user_delete/" class="btn btn-danger">Remover</a>
-              </div>
-            </div>
-          </div>
-
-          
-
-
-          
-    </div>
-    {% endif %}
-    {% endblock %}
-    
-    <!-- Footer -->
-    <footer class="mt-4">
-
-      <!-- Copyright -->
-      <div class="footer-copyright text-center py-3">Powered by:
-        <a href="/"> Creative</a>
-      </div>
-      <!-- Copyright -->
-
-    </footer>
-    <!-- Footer -->
-    <!--JAVA SCRIPT-->
-    <script src="{% static 'js/bootstrap.js'%}"></script>
-    <!----->
-  </body>
-</html>
+                        <div class="card mx-2 my-2" style="width: 18rem;">
+                            <div class="card-body">
+                                <h5 class="card-title">Ver mesas</h5>
+                                <p class="card-text">
+                                    Ao clicar aqui você pode ver todas as mesas criadas por seu estebelecimento
+                                </p>
+                                <div class="text-center">
+                                    <a href="/mesa/mesaConsult/" class="btn btn-primary mt-5">Ver mesas</a>
+                                </div>
+                            </div>
+                        </div>
+                      </div>
+                    </div>
+                      
+                        {% if status == True %}
+                            <h3 class="text-center my-3">Métodos de pagamento:</h3>
+                            <div class="container-fluid">
+                                <div class="row justify-content-center">
+                                    <div class="card mx-2 my-2" style="width: 18rem;">
+                                        <div class="card-body">
+                                            <h5 class="card-title">Adicionar método de pagamento</h5>
+                                            <p class="card-text">
+                                                Adicionar um novo método de pagamento significa facilidade para seus clientes
+                                            </p>
+                                            <div class="text-center">
+                                                <a href="/pagamento/adicionar_metodo_de_pagamento/"
+                                                   class="btn btn-success">Adicionar</a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="card mx-2 my-2" style="width: 18rem;">
+                                        <div class="card-body">
+                                            <h5 class="card-title">Remover método de pagamento</h5>
+                                            <p class="card-text">
+                                                Aṕós remover um método de pagamento verifique se existe pelo menos um restante
+                                            </p>
+                                            <div class="text-center">
+                                                <a href="/pagamento/remover_metodo_de_pagamento/" class="btn btn-danger">Remover</a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="card mx-2 my-2" style="width: 18rem;">
+                                        <div class="card-body">
+                                            <h5 class="card-title">Ver métodos de pagamento</h5>
+                                            <p class="card-text">
+                                                Ver todos os métodos de pagamentos já adicionados anteriormente
+                                            </p>
+                                            <div class="text-center">
+                                                <a href="/pagamento/metodos_de_pagamento/" class="btn btn-primary">Ver métodos</a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row justify-content-center">
+                                        <h3 class="text-center my-3">Sistema de Push:</h3>
+                                        <div class="card mx-2 my-2" style="width: 18rem;">
+                                            <div class="card-body">
+                                                <h5 class="card-title">Acesse o sistema notificações de Push:</h5>
+                                                <p class="card-text">
+                                                    O sistema de notificações usa IOT para notificar pedidos, através de aplicativos de terceiros.
+                                                </p>
+                                                <div class="text-center">
+                                                    <a href="/push/" class="btn btn-warning mt-5">Acessar</a>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>
+                                {% endif %}
+                                <h3 class="text-center my-3">Usuário:</h3>
+                                <div class="container-fluid">
+                                    <div class="row justify-content-center">
+                                        <div class="card mx-2 my-2" style="width: 18rem;">
+                                            <div class="card-body">
+                                                <h5 class="card-title">Editar dados do usuário atual</h5>
+                                                <p class="card-text">
+                                                    Você pode atualizar seus dados de cadastro, como email,numero para contato, nome de usuário e etc
+                                                </p>
+                                                <div class="text-center">
+                                                    <a href="/auth/edit/" class="btn btn-warning mt-5">Editar</a>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        {% if status == True %}
+                                            <div class="card mx-2 my-2" style="width: 18rem;">
+                                                <div class="card-body">
+                                                    <h5 class="card-title">Adicionar novo usuário como filial</h5>
+                                                    <p class="card-text">
+                                                        Ao adicionar um novo usuário, ele funcionará como uma filial do atual, compartilhando o mesmo cardápio
+                                                    </p>
+                                                    <div class="text-center">
+                                                        <a href="/auth/" class="btn btn-success mt-5">Adicionar</a>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="card mx-2 my-2" style="width: 18rem;">
+                                                <div class="card-body">
+                                                    <h5 class="card-title">
+                                                        Remover o usuário atual
+                                                    </h5>
+                                                    <p class="card-text">
+                                                        Ao remover o usuário atual, o histórico de pedidos será apagado e você terá que colocar outro usuário como sede manualmente, caso tenha alguma dúvida contate o suporte
+                                                    </p>
+                                                    <div class="text-center">
+                                                        <a href="/auth/user_delete/" class="btn btn-danger">Remover</a>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            {% else %}
+                                <div class="row justify-content-center">
+                                    <h3 class="text-center my-3">
+                                        Sistema de Push:
+                                    </h3>
+                                    <div class="card mx-2 my-2" style="width: 18rem;">
+                                        <div class="card-body">
+                                            <h5 class="card-title">
+                                                Acesse o sistema notificações de Push:
+                                            </h5>
+                                            <p class="card-text">
+                                                O sistema de notificações usa IOT para notificar pedidos, através de aplicativos de terceiros.
+                                            </p>
+                                            <div class="text-center">
+                                                <a href="/push/" class="btn btn-warning mt-5">Acessar</a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            {% endif %}
+                        {% endblock %} 
+                        {% include 'footer/register_footer.html' %}
+                        <!-- Footer -->
+                        <!-- Footer -->
+                        <!--JAVA SCRIPT-->
+                        <script src="{% static 'js/bootstrap.js'%}"></script>
+                        <!----->
+                    </body>
+                </html

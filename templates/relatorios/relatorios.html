@@ -1,0 +1,39 @@
+<!doctype html>
+{% load static%}
+<html lang="pt-br">
+  <head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!-- Bootstrap CSS -->
+    <link rel="shortcut icon" href="{%static '/img/favicon.png' %}">
+    <link href="{% static '/css/bootstrap.css' %}" rel="stylesheet">
+
+    <title>{{relatorio}}</title>
+  </head>
+  <body>
+    <!--START NAVBAR-->
+    {% include 'base/dark_base.html' %}
+    <h1 class="my-2 text-center text-danger">{{relatorio}}</h1>
+    <h2 class="my-2 text-center">Finanças: </h2> 
+    <div class="row justify-content-center">
+        <div class="card mx-2 my-2" style="width: 18rem;">
+            <div class="card-body">
+              <h5 class="card-title text-center">Total apurado: </h5>
+              <h1 class="card-title text-center text-success">R$ {{valor_total}} </h1>
+            </div>
+          </div>
+
+          <div class="card mx-2 my-2" style="width: 18rem;">
+            <div class="card-body">
+              <h5 class="card-title text-center">Total atendimentos: </h5>
+              <h1 class="card-title text-center text-success">{{atendimentos}} </h1>
+            </div>
+          </div>
+         
+          
+    <script src="{% static 'js/bootstrap.js'%}"></script>
+    <!----->
+  </body>
+</html>
