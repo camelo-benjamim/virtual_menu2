@@ -244,34 +244,36 @@ def pagamento(request):
 ### DEVIDO A POSSIBILIDADE DE VULNERABILIDADE ELA SÓ É ACESSADA QUANDO USUÁRIO AUTENTICADO
 ### NAO RETORNA A TELA DE AUTENTICACAO DEVIDO AOS MESMOS MOTIVOS CITADOS ACIMA    
 
-@login_required
+
 def dashboard(request):
-    
-    carrinhos_filtro1 = Cart.objects.filter(concluido=True,finalizado=False)
-    ###EXCLUINDO O QUE N PERTENCE AO USUARIO DA QUERYSET
-    mesas = Mesa.objects.filter(criado_por=request.user)
-    carrinhos = []
-    for i in carrinhos_filtro1:
-        if i.mesa_pedido in mesas:
-            carrinhos.append(i)
-    contador = 0
-    for carrinho in carrinhos:
-        print(carrinhos[contador])
-        contador += 1
-        
+    if request.user.is_authenticated: 
+        carrinhos_filtro1 = Cart.objects.filter(concluido=True,finalizado=False)
+        ###EXCLUINDO O QUE N PERTENCE AO USUARIO DA QUERYSET
+        mesas = Mesa.objects.filter(criado_por=request.user)
+        carrinhos = []
+        for i in carrinhos_filtro1:
+            if i.mesa_pedido in mesas:
+                carrinhos.append(i)
+        contador = 0
+        for carrinho in carrinhos:
+            print(carrinhos[contador])
+            contador += 1
             
-        
-    ## RESOLVER MILLESECOUNDS
-    context = {
-        'total': str(contador), 'carrinhos': carrinhos,
-    }
-    return render(request,'pedidos/usuario/dashboard.html',context=context)
+                
+            
+        ## RESOLVER MILLESECOUNDS
+        context = {
+            'total': str(contador), 'carrinhos': carrinhos,
+        }
+        return render(request,'pedidos/usuario/dashboard.html',context=context)
     
+    else:
+        return redirect ('/auth/user/login/')
     
     
 
 ### VER PEDIDOS INDIVIDUALMENTE
-
+@login_required
 def verPedido(request,id):
     if request.method == "GET":
     ##EXIBE O PEDIDO DO CLIENTE MOSTRANDO TODOS OS ITENS PEDIDOS PELO CLIENTE...
