@@ -47,11 +47,12 @@ INSTALLED_APPS = [
     ##'whitenoise.runserver_nostatic',
     'accounts',
     'menu',
-    'mesa',
-    'pagamento',
-    'carrinho',
-    'relatorios',
-    'push',
+    
+    ##'mesa',
+    ##'pagamento',
+    ##'carrinho',
+    ##'relatorios',
+    ##'push',
     ### APLICATIVOS DO DJANGO
     'django.contrib.admin',
     'django.contrib.auth',

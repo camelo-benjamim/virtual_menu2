@@ -28,4 +28,8 @@ class ClassificacoesAdmin(admin.ModelAdmin):
     def has_add_permission(self, request, obj=None):
         return False
 
+@admin.register(Restaurante)
+class RestauranteAdmmin(admin.ModelAdmin):
+    search_filter = ('nome_restaurante')
+    
 # Register your models here.

@@ -4,6 +4,11 @@ from django.shortcuts import get_object_or_404
 from menu.models import *
 
 ### CLASSIFICAÇAO DOS ITENS
+class FormRestaurante(forms.ModelForm):
+    class Meta:
+        model = Restaurante
+        fields = ['nome_restaurante','proprietario']
+        labels = {'nome_restaurante': ('Nome do restaurante:'),'proprietario':('Proprietario'),}
 class FormClassificacoes(forms.ModelForm):
     class Meta:
         model = Classificacoes
@@ -21,20 +26,24 @@ class FormItens(forms.ModelForm):
     
     class Meta:
         model = Item
-        fields = ['item_nome','classificacao','descricao','preco','img']
-        labels = {'item_nome':('Nome do item: '), 'classificacao':('Classificação: '),'descricao':('Descrição:'),'preco':('Preco:'),'img':('Imagem do produto')}
+        fields = ['item_nome','classificacao','preco','img']
+        labels = {'item_nome':('Nome do item: '), 'classificacao':('Classificação: '),'preco':('Preco:'),'img':('Imagem do produto')}
     
 ## FORMULÁRIO PARA EDIÇAO DE ITENS  
 class FormEditItens(forms.ModelForm):
     
     class Meta:
         model = Item
-        fields = ['item_nome','classificacao','descricao','preco','img']
-        labels = {'item_nome':('Nome do item: '), 'classificacao':('Classificação: '),'descricao':('Descrição:'),'preco':('Preco:'),'img':('Imagem do produto')}
+        fields = ['item_nome','classificacao','preco','img']
+        labels = {'item_nome':('Nome do item: '), 'classificacao':('Classificação: '),'preco':('Preco:'),'img':('Imagem do produto')}
      
     
 
-
-        
+class FormRestaurante(forms.ModelForm):
+    class Meta:
+        model = Restaurante
+        fields = ['nome_restaurante','proprietario']
+        labels = {'nome_restaurante':('Nome do restaurante: '), 'proprietario':('Proprietário'),}
+        help_texts = {'proprietario': ('As opções disponíveis são todos os usuários convidados usando seu código de convite... ')}
 
         

@@ -257,15 +257,44 @@ def apagarProduto(request,produto):
 
 
 ###AJUSTES
+@login_required
 def settings(request):
-    user_status = get_object_or_404(User, pk=request.user.id)
-    boolean_statuses = user_status.main
-    context = {'status': boolean_statuses,}
-        
-    return render(request,'configuracoes_internas/settings.html',context=context)
-    
-
-
+    return render(request,'configuracoes_internas/settings.html')
 
 def boas_vindas(request):
     return redirect('/cardapio/')
+
+def adicionarRestaurante(request):
+    if request.method == "GET":
+        form = FormRestaurante()
+        context = {'form': form,}
+        return render(request,'restaurante/adicionar_restaurante.html',context=context)  
+    else:
+        form = FormRestaurante(request.POST)
+        if form.is_valid():
+            proprietario = form.cleaned_data['proprietario']
+            nome = form.cleaned_data['nome_restaurante']
+            restaurantes = Restaurante.objects.filter(proprietario=proprietario, nome_restaurante=nome).first()
+            if restaurantes == None:
+                form.save()
+                return redirect("/")
+            else:
+                messages.info(request, 'Your password has been changed successfully!')
+        context = {'form':form,}
+        return render(request,'restaurante/adicionar_restaurante.html',context=context)
+###concluir
+def editarRestaurante(request,nome_restaurante):
+    if request.method == "GET":
+        form = FormRestaurante()
+        context = {'form': form,}
+        return render(request,'restaurante/adicionar_restaurante.html',context=context)  
+    else:
+        form = FormRestaurante(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect("/")
+        context = {'form':form,}
+        return render(request,'restaurante/adicionar_restaurante.html',context=context)
+
+def deletarRestaurante(request,restaurante):
+    pass

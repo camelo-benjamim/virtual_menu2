@@ -10,6 +10,7 @@ from django_currentuser.db.models import CurrentUserField
 # Create your models here.
 ##MESA DO RESTAURANTE
 class Mesa(models.Model):
+    ##restaurante = models.ForeignKey(Restaurante,on_delete=models.CASCADE)
     criado_por = CurrentUserField()
     description = models.CharField(max_length=30)
 

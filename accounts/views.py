@@ -6,7 +6,6 @@ from django.contrib.auth import login, authenticate
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 # Create your views here.
-@login_required
 def SignUp(request):
     if request.method == "GET":
         form = UserCreationForm()
@@ -48,31 +47,15 @@ def ChangeUsr(request):
 
             if(form.is_valid()):
                 post = form.save(commit=False)
-                post.companysname = form.cleaned_data['companysname']
-                post.main = form.cleaned_data['main']
                 post.postal_code = form.cleaned_data['postal_code']
                 post.city = form.cleaned_data['city']
                 post.state = form.cleaned_data['state']
                 post.address = form.cleaned_data['address']
+                post.avatar = form.cleaned_data['avatar']
                 post.district = form.cleaned_data['district']
                 post.number_ref = form.cleaned_data['number_ref']
                 post.contacts_phone = form.cleaned_data['contacts_phone']
-                
-                ##PASSED
-                if post.main == False:
-                    post.save()
-                    return redirect("/settings/")
-                ###PASSED
-                elif post.main == True and comparation_obj.main == True:
-                    post.save
-                    return redirect("/settings/")
-                else:
-                    for i in User.objects.all():
-                        if i.main == True:
-                            messages.info(request, 'Você já possui uma sede, caso deseje alterar, faça login com a sede atual e desmarque sede nas configurações')
-                            return render (request,'user/edit_user.html',{'form':form,'post':post,})
-                    post.save()
-                ##REVERSE NOT FOUND
+                post.save()
             
         
         return render(request, 'user/edit_user.html', {'form': form, 'post' : post})

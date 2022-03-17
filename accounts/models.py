@@ -32,11 +32,14 @@ STATE_CHOICES = (
     ('TO','TOCANTINS')  
 
 )
+TIPOS_DE_USUARIOS = (
+    ('V','Vendedor'),
+    ('U','Usuário'),
+)
 class User(AbstractUser):
     
     ##IMPORTAR USR E ADICIONAR OS ATRIBUTOS ABAIXO COMO ATRIBUTOS DO USUÁRIO
     ## PODE SER MODIFICADO PELO ADMIN
-    companysname = models.CharField(max_length=50,unique=True)
     postal_code = models.IntegerField(default=0)
     city = models.CharField(max_length=30)
     state = models.CharField(max_length=2,choices=STATE_CHOICES)
@@ -44,10 +47,11 @@ class User(AbstractUser):
     district = models.CharField(max_length=40)
     number_ref = models.SmallIntegerField(default=0)
     contacts_phone = models.BigIntegerField(unique=True,default=0)
-    main = models.BooleanField(default=False)
+    avatar = models.ImageField(null=True,blank=True,default=None,upload_to="avatar/")
+    tipo_de_usuario = models.CharField(choices=TIPOS_DE_USUARIOS,max_length=2)
     USERNAME_FIELD = 'username'
-    REQUIRED_FIELDS = ['first_name','last_name','email','companysname','postal_code','city','state','address','district','number_ref','contacts_phone','main',]
+    REQUIRED_FIELDS = ['first_name','last_name','email','postal_code','city','state','address','district','number_ref','contacts_phone',]
 
     def __str__(self):
-        return self.companysname
+        return self.username
     

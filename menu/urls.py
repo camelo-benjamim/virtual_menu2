@@ -4,6 +4,9 @@ from menu.views import *
 ##
 urlpatterns = [
     ## VIEWS DO USUÁRIO
+    ##RESTAURANTE
+    path('adicionar_restaurante/',adicionarRestaurante),
+    path('editar_restaurante/<str:nome_restaurante>/',editarRestaurante),
     ###CATEGORIAS
     ##SUPER
     path('meus_produtos/',menuView, name='adm_view'),

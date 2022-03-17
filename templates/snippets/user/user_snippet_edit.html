@@ -7,14 +7,13 @@
     {% csrf_token %}
     <div class="container-fluid mx-1 my-4">
     <h2>Informações do estabelecimento:</h2>
-      {{form.companysname|as_crispy_field}}
       {{form.postal_code|as_crispy_field}}
       {{form.city|as_crispy_field}}
       {{form.state|as_crispy_field}}
       {{form.address|as_crispy_field}}
       {{form.district|as_crispy_field}}
       {{form.number_ref|as_crispy_field}}
-      {{form.main|as_crispy_field}}
+      {{form.avatar|as_crispy_field}}
       {% if messages %}
 
             {% for message in messages %}
