@@ -5,11 +5,11 @@ from django.contrib.auth.models import Group
 # Register your models here.
 class CustomUserAdmin(UserAdmin):
     model = User
-    list_display = ['username','email','contacts_phone']
+    list_display = ['username','email','contacts_phone','codigo_de_convite']
     list_filter  = ('postal_code',)
     search_fields = ('email','username',)
     ordering = ('date_joined',)
-    readonly_fields = ['username','first_name','last_name','email','postal_code','city','state','address','district','number_ref','contacts_phone','avatar','last_login','is_active','date_joined','user_permissions','groups']
+    readonly_fields = ['username','first_name','last_name','email','postal_code','city','state','address','district','number_ref','contacts_phone','avatar','last_login','is_active','date_joined','user_permissions','groups','tipo_de_usuario','codigo_convidado','codigo_de_convite']
     
     def has_add_permission(self, request,obj=None):
         return False

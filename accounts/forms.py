@@ -7,10 +7,9 @@ from django.contrib.auth import admin as adm
 class UserCreationForm(forms.UserCreationForm):
     class Meta(forms.UserCreationForm.Meta):
         model = User
-        fields = ("postal_code","city","state","address","district","number_ref","first_name","last_name","email","avatar",'tipo_de_usuario',"contacts_phone","username","password1","password2")
-        labels = { 'postal_code':('Código postal(CEP):'),'city': ('Cidade:'),'state': ('Estado:'),'address':('Endereço:'), 'district': ('Bairro:'),'number_ref':('Número de referencia:'),'first_name':('Nome:'), 'last_name':('Sobrenome:'),'contacts_phone':('Número de telefone:'),'avatar':("Avatar do usuário:")}
-        
-    
+        fields = ("postal_code","city","state","address","district","number_ref","first_name","last_name","email","avatar",'tipo_de_usuario','codigo_convidado',"contacts_phone","tipo_de_usuario","username","password1","password2")
+        labels = { 'postal_code':('Código postal(CEP):'),'city': ('Cidade:'),'state': ('Estado:'),'address':('Endereço:'), 'district': ('Bairro:'),'number_ref':('Número de referencia:'),'first_name':('Nome:'), 'last_name':('Sobrenome:'),'contacts_phone':('Número de telefone:'),'avatar':("Avatar do usuário:"),"tipo_de_usuario":("Tipo de usuário: "),'codigo_convite':("Codigo de convite:")}
+        help_texts = {'codigo_convidado': ('Coloque o código de convite da pessoa que te recomendou a plataforma ou do usuário que vai administrar seu restaurante')}
     def clean_postal_code(self):
         data = self.cleaned_data['postal_code']
         cont = len(str(data))

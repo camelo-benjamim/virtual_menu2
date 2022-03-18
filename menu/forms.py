@@ -4,15 +4,11 @@ from django.shortcuts import get_object_or_404
 from menu.models import *
 
 ### CLASSIFICAÇAO DOS ITENS
-class FormRestaurante(forms.ModelForm):
-    class Meta:
-        model = Restaurante
-        fields = ['nome_restaurante','proprietario']
-        labels = {'nome_restaurante': ('Nome do restaurante:'),'proprietario':('Proprietario'),}
+
 class FormClassificacoes(forms.ModelForm):
     class Meta:
         model = Classificacoes
-        fields = ['nome_classificacao']
+        fields = ['nome_classificacao',]
         labels = {'nome_classificacao':('Ex: Petiscos ')}
 class FormClassificacao(forms.ModelForm):
     class Meta:
@@ -42,8 +38,14 @@ class FormEditItens(forms.ModelForm):
 class FormRestaurante(forms.ModelForm):
     class Meta:
         model = Restaurante
-        fields = ['nome_restaurante','proprietario']
-        labels = {'nome_restaurante':('Nome do restaurante: '), 'proprietario':('Proprietário'),}
+        fields = ['nome_restaurante','proprietario','logo_restaurante']
+        labels = {'nome_restaurante':('Nome do restaurante: '), 'proprietario':('Proprietário'),'logo_restaurante':('Logo do restaurante: ')}
         help_texts = {'proprietario': ('As opções disponíveis são todos os usuários convidados usando seu código de convite... ')}
 
+    
+class FormDeleteRestaurante(forms.ModelForm):
+    class Meta:
+        model = Restaurante 
+        fields = ['nome_restaurante']
+        labels = {'nome_restaurante': ('Nome do restaurante: '),}
         

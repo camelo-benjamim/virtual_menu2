@@ -5,8 +5,12 @@ from menu.views import *
 urlpatterns = [
     ## VIEWS DO USUÁRIO
     ##RESTAURANTE
+    path('escolher_restaurante/',restauranteChoose),
+    path('restaurante_cookie/<int:restaurante>/',restauranteCookie),
     path('adicionar_restaurante/',adicionarRestaurante),
     path('editar_restaurante/<str:nome_restaurante>/',editarRestaurante),
+    path('remover_restaurante/<str:nome_restaurante>/',deletarRestaurante),
+    path('restaurante_removido/',restauranteRemovido),
     ###CATEGORIAS
     ##SUPER
     path('meus_produtos/',menuView, name='adm_view'),

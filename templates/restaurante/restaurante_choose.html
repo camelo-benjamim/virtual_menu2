@@ -1,0 +1,26 @@
+{%load static%}
+{% load crispy_forms_tags %}
+<!doctype html>
+<html lang="pt-br">
+  <head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!-- Bootstrap CSS -->
+    <link rel="shortcut icon" href="{%static '/img/favicon.png' %}">
+    <!---->
+    <link href="{%static '/css/deleted_user.css' %}" rel="stylesheet">
+
+    <title>Escolha o restaurante</title>
+  </head>
+  <body>
+  <!--NAVBAR-->
+    {% include 'base/cardapio_base.html' %}
+    <!--BODY-->
+    {% include 'snippets/restaurante/restaurante_choose.html' %}
+    <!--JAVA SCRIPT-->
+    <script src="{% static 'js/bootstrap.js'%}"></script>
+    <!----->
+  </body>
+</html>

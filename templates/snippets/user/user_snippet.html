@@ -6,7 +6,23 @@
       <form action="." method="post" class="form-group" enctype="multipart/form-data">
       {% csrf_token %}
       <div class="container-fluid mx-1 my-4 col-xs-1 center-block">
-      <h2 class="mb-3">Inf. do estabelecimento:</h2>
+      
+    <h2 class="mb-3">Inf. de contato: </h2>
+    <div class="row">
+      <div class="col-md-4">
+        {{form.first_name|as_crispy_field}}
+      </div>
+      <div class="col-md-4">
+        {{form.last_name|as_crispy_field}}
+      </div>
+      <div class="col-md-4">
+        {{form.email|as_crispy_field}}
+      </div>
+      <div class="col-md-4">
+        {{form.contacts_phone|as_crispy_field}}
+      </div>
+    </div>
+    <h2 class="my-4">Inf. de endereço: </h2>
       <div class="row">
         <div class="col-md-4">
         {{form.postal_code|as_crispy_field}}
@@ -31,21 +47,15 @@
         </div>
         
       </div>
-    <h2 class="my-4">Inf. do Proprietário:</h2>
-    <div class="row">
-      <div class="col-md-4">
-        {{form.first_name|as_crispy_field}}
+      <h2 class="my-4">Tipo de usuário e convite: </h2>
+      <div class="row">
+        <div class="col-md-4">
+        {{form.tipo_de_usuario|as_crispy_field}}
+        </div>
+        <div class="col-md-4">
+          {{form.codigo_convidado|as_crispy_field}}
+          </div>
       </div>
-      <div class="col-md-4">
-        {{form.last_name|as_crispy_field}}
-      </div>
-      <div class="col-md-4">
-        {{form.email|as_crispy_field}}
-      </div>
-      <div class="col-md-4">
-        {{form.contacts_phone|as_crispy_field}}
-      </div>
-    </div>
     <h2 class="my-4">Login e Senha:</h2>
     <div class="row">
       <div class="col-md-4">

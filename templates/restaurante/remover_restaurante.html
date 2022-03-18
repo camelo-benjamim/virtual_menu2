@@ -1,0 +1,51 @@
+{%load static%}
+{% load crispy_forms_tags %}
+<!doctype html>
+<html lang="pt-br">
+  <head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!-- Bootstrap CSS -->
+    <link rel="shortcut icon" href="{%static '/img/favicon.png' %}">
+    <!---->
+    <link href="{%static '/css/delete_user.css' %}" rel="stylesheet">
+
+    <title>Apagar Cadastro</title>
+  </head>
+  <body>
+  <!--NAVBAR-->
+  {% include 'base/danger_base.html'%}
+  <!--FORM-->
+  <div class="container-sm my-4">
+    <div class="container-fluid" style="max-width: 500px;">
+        {% if messages %}
+        
+        {% for message in messages %}
+        <div class="alert alert-danger" role="alert">
+          {{message}}
+        </div>
+        {% endfor %}
+  
+  {% endif %}
+      <h3> Para <strong class="text-danger">deletar</strong> seu restaurante permanentemente, repita o nome do seu restaurante:</h3>
+      <h2><strong class="bg-warning">{{restaurante}}</strong></h2>
+      <h4> Por favor, repita-o abaixo para deletar </h4>
+      <form action="." method="post" class="form-group">
+      {% csrf_token %}
+      {{form|crispy}}
+      <h6>Ao clicar no botão <strong> Apagar restaurante </strong> você nos isenta de qualquer responsabilidade sobre os dados do restaurante (mesas, itens no cardápio e licensa)
+          <div class="text-center my-4"> 
+            <button type="submit" class="btn btn-danger">Apagar restaurante</button>
+          </div>
+      </form>
+    </div>
+  
+</div>
+{% include 'footer/fixed_position_footer_dark.html'%}
+    <!--JAVA SCRIPT-->
+    <script src="{% static 'js/bootstrap.js'%}"></script>
+    <!----->
+  </body>
+</html>

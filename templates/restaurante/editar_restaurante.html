@@ -1,0 +1,33 @@
+<!doctype html>
+{% load static%}
+<html lang="pt-br">
+  <head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <!--<meta charset="utf-8"> -->
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    
+    <!-- Bootstrap CSS -->
+    <link rel="shortcut icon" href="{%static '/img/favicon.png' %}">
+    <link href="{% static '/css/bootstrap.css' %}" rel="stylesheet">
+
+    <title>Menu</title>
+  </head>
+  <body>
+  
+    {% include 'base/meus_produtos.html' %}
+    <!--END NAVBAR-->
+    <!--AINDA NÃO FUNCIONA PERFEITAMENTE, IMPLEMENTAR CATEGORIAS-->
+    <div class="container-fluid">
+        {% include 'snippets/restaurante/restaurante_edit.html' with instance=obj %}
+    </div>
+    <!--FOOTER-->
+    {% include 'footer/fixed_position_footer_dark.html' %}
+    <!--JAVA SCRIPT-->
+    <script src="{% static 'js/bootstrap.js'%}"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
+    <!----->
+  </body>
+</html>

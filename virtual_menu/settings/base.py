@@ -29,7 +29,7 @@ SECRET_KEY = 'django-insecure-%t^icwtx(^6bqz)7kch*@ifvfv60m4()g2)^1chn-2p8vihi6g
 ### ----
     ### RODANDO LOCALMENTE
     ### SERVIDOR TESTE
-DEBUG = False
+DEBUG = True
     ### QUANDO FOR OFICIAL
     ### COLOCAR O DEBUG ABAIXO
     

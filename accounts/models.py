@@ -1,5 +1,6 @@
 from django.contrib.auth.models import AbstractUser
 from django.db import models
+import uuid
 
 # Create your models here.
 STATE_CHOICES = (
@@ -35,6 +36,7 @@ STATE_CHOICES = (
 TIPOS_DE_USUARIOS = (
     ('V','Vendedor'),
     ('U','Usuário'),
+  
 )
 class User(AbstractUser):
     
@@ -49,8 +51,10 @@ class User(AbstractUser):
     contacts_phone = models.BigIntegerField(unique=True,default=0)
     avatar = models.ImageField(null=True,blank=True,default=None,upload_to="avatar/")
     tipo_de_usuario = models.CharField(choices=TIPOS_DE_USUARIOS,max_length=2)
+    codigo_de_convite = models.UUIDField(default=uuid.uuid4(),unique=True)
+    codigo_convidado = models.CharField(null=True,default=None,max_length=120)
     USERNAME_FIELD = 'username'
-    REQUIRED_FIELDS = ['first_name','last_name','email','postal_code','city','state','address','district','number_ref','contacts_phone',]
+    REQUIRED_FIELDS = ['first_name','last_name','email','postal_code','city','state','address','district','number_ref','contacts_phone','tipo_de_usuario']
 
     def __str__(self):
         return self.username

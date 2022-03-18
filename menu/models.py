@@ -38,7 +38,7 @@ class Item_classificacao(models.Model):
         return self.text
 ##ITEM É O PRODUTO EM SÍ QUE APARECERÁ NO CARDÁPIO
 class Item(models.Model):
-    item_nome = models.CharField(max_length=40,unique=True)
+    item_nome = models.CharField(max_length=40)
     classificacao = models.ForeignKey(Item_classificacao,on_delete=models.CASCADE,default=None)
     preco = models.DecimalField(decimal_places=2,max_digits=10)
     img = models.ImageField(upload_to = 'images/',null=True,blank=True, default=None)
