@@ -8,7 +8,8 @@ urlpatterns = [
     path('escolher_restaurante/',restauranteChoose),
     path('restaurante_cookie/<int:restaurante>/',restauranteCookie),
     path('adicionar_restaurante/',adicionarRestaurante),
-    path('editar_restaurante/<str:nome_restaurante>/',editarRestaurante),
+    ##ALTERAÇÃO DE DADOS DO RESTAURANTE
+    path('editar_restaurante/',editarRestaurante),
     path('remover_restaurante/<str:nome_restaurante>/',deletarRestaurante),
     path('restaurante_removido/',restauranteRemovido),
     ###CATEGORIAS

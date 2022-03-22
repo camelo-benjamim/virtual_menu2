@@ -4,8 +4,8 @@ from mesa.models import *
 @admin.register(Mesa)
 class MesaAdmin(admin.ModelAdmin):
     search_fields = ('description',)
-    list_display = ('description','criado_por')
-    readonly_fields = ('criado_por','description')
+    list_display = ('description','restaurante')
+    readonly_fields = ('restaurante','description')
     
     def has_add_permission(self, request, obj=None):
         return False

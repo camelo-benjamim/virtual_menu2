@@ -12,7 +12,7 @@ class Restaurante(models.Model):
     nome_restaurante = models.CharField(max_length= 125)
     proprietario = models.ForeignKey(User,on_delete=models.CASCADE,related_name='proprietario_restaurante')
     usuario_criador = CurrentUserField()
-    logo_restaurante = models.ImageField(upload_to='logo_restaurantes/')
+    logo_restaurante = models.ImageField(upload_to='logo_restaurantes/',blank=True,null=True,default=None)
 
     def __str__(self):
         return self.nome_restaurante

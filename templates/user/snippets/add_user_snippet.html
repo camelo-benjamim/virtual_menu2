@@ -7,7 +7,7 @@
       {% csrf_token %}
       <div class="container-fluid mx-1 my-4 col-xs-1 center-block">
       
-    <h2 class="mb-3">Inf. de contato: </h2>
+    <h2 class="mb-3 mt-1">Inf. de identificação: </h2>
     <div class="row">
       <div class="col-md-4">
         {{form.first_name|as_crispy_field}}
@@ -22,7 +22,7 @@
         {{form.contacts_phone|as_crispy_field}}
       </div>
     </div>
-    <h2 class="my-4">Inf. de endereço: </h2>
+    <h2 class="my-4">Inf. de contato: </h2>
       <div class="row">
         <div class="col-md-4">
         {{form.postal_code|as_crispy_field}}
@@ -47,10 +47,10 @@
         </div>
         
       </div>
-      <h2 class="my-4">Tipo de usuário e convite: </h2>
+      <h2 class="my-4">Código de convite: </h2>
       <div class="row">
         <div class="col-md-4">
-        {{form.tipo_de_usuario|as_crispy_field}}
+        {{form.codigo_de_convite|as_crispy_field}}
         </div>
         <div class="col-md-4">
           {{form.codigo_convidado|as_crispy_field}}
@@ -69,7 +69,7 @@
       </div>
         
         <div class="container-fluid my-2 text-center">
-        <input type="submit" value="Cadastrar" class="btn btn-primary">
+        <input type="submit" value="Cadastrar" class="btn btn-warning">
         </div>
         </div>
         </div>

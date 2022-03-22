@@ -10,7 +10,7 @@
         <!-- Bootstrap CSS -->
         <link rel="shortcut icon" href="{% static '/img/favicon.png' %}">
         <link rel="stylesheet" href="{% static 'css/bootstrap.css' %}">
-        <title>Adicionar Categoria</title>
+        <title>Editar produto:</title>
     </head>
     <body>
         <!-- Just an image -->
@@ -31,7 +31,6 @@
                 {% csrf_token %}
                 {{ form.img|as_crispy_field }}
                 <div class="my-2">{{ form.item_nome|as_crispy_field }}</div>
-                <div class="my-2">{{ form.descricao|as_crispy_field }}</div>
                 <div class="my-2">{{ form.preco|as_crispy_field }}</div>
                 <div class="my-2">{{ form.classificacao|as_crispy_field }}</div>
                 <div class="col text-center">

@@ -11,15 +11,15 @@
     <!---->
     <link href="{%static '/css/user.css' %}" rel="stylesheet">
 
-    <title>Cadastrar estabelecimento</title>
+    <title>Bem vindo ao Virtual Menu</title>
   </head>
   <body>
   
   <!--NAVBAR-->
-  {% include 'base/dashboard_base.html'%}
+  {% include 'user/user_navbars/user_register_base.html'%}
   <div class="container-fluid">
   <!--FORM-->
-  {% include 'snippets/user/user_snippet.html' %}
+  {% include 'user/snippets/add_user_snippet.html' %}
   <!--END FORM-->
   </div>
   {% include 'footer/register_footer.html'%}

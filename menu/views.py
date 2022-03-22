@@ -5,55 +5,84 @@ from menu.forms import *
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 
-###FUNÇÕES RELACIONADAS A RESTAURANTE
-
-##adiciona restaurante, os proprietários podem ser apenas usuários com seu código de convite
-##isso é feito como uma medida de segurança,com a finalidade de evitar fraudes
+##Restaurante --> funções (adicionar,editar e remover)
 def adicionarRestaurante(request):
     if request.method == "GET":
         form = FormRestaurante()
-        context = {'form': form,}
+        contador_restaurantes1 = Restaurante.objects.filter(proprietario=request.user)
+        contador_restaurantes2 = Restaurante.objects.filter(usuario_criador=request.user)
+        contador_geral = 0
+        contagem_geral = []
+            ##adicionando tudo ...
+        for i in contador_restaurantes1:
+            if not contagem_geral.__contains__(i):
+                contagem_geral.append(i)
+        for k in contador_restaurantes2:
+            if not contagem_geral.__contains__(k):
+                contagem_geral.append(i)
+        for j in range(len(contagem_geral)):
+            contador_geral +=1
+            
+        context = {'form': form,'contador_geral': contador_geral,}
         return render(request,'restaurante/adicionar_restaurante.html',context=context)  
     else:
         form = FormRestaurante(request.POST,request.FILES)
         if form.is_valid():
             proprietario = form.cleaned_data['proprietario']
             nome = form.cleaned_data['nome_restaurante']
+            ##verificando se o proprietário já possui um restaurante com esse mesmo nome
             restaurantes = Restaurante.objects.filter(proprietario=proprietario, nome_restaurante=nome).first()
             if restaurantes == None:
                 form.save()
-                return redirect("/")
+                restaurantes_proprietario = Restaurante.objects.filter(proprietario=request.user)
+                restaurantes_vendedor = Restaurante.objects.filter(usuario_criador=request.user)
+                restaurantes = []
+                for i in restaurantes_proprietario:
+                    restaurantes.append(i)
+                for w in restaurantes_vendedor:
+                    if not restaurantes.__contains__(w):
+                        restaurantes.append(i)
+                if len(restaurantes) > 1:
+                    return redirect("/escolher_restaurante/")
+                else:
+                    restaurante = restaurantes[0]
+                    request.session['restaurante'] = restaurante.id
+                    return redirect ('/meus_produtos/')
             else:
-                messages.info(request, 'Você já adicionou este restaurante anteriormente')
+                messages.info(request, 'Você já adicionou um restaurante para este mesmo proprietário com esse nome, tente novamente com outro nome')
+        
         context = {'form':form,}
         return render(request,'restaurante/adicionar_restaurante.html',context=context)
-###concluir
-def editarRestaurante(request,nome_restaurante):
-    usuario=request.user
-    if request.method == "GET":
-        try:
-            instance = get_object_or_404(Restaurante,nome_restaurante=nome_restaurante, proprietario=usuario)
-            ##VERIFICAR PRÉ-EXISTENCIA DE RESTAURANTE COM O MESMO NOME DO MESMO USUÁRIO
-            ##EXCLUINDO O ATUAL
-        except:
-            try:
-                instance = get_object_or_404(Restaurante,nome_restaurante=nome_restaurante,usuario_criador=usuario)
-            except:
-                pass
-        
-        form = FormRestaurante(instance=instance)
-        context = {'form': form,}
-        return render(request,'restaurante/editar_restaurante.html',context=context)  
-    else:
-        form = FormRestaurante(request.POST,request.FILES)
-        if form.is_valid():
-            form.save()
-            return redirect("/")
-        context = {'form':form,}
-        return render(request,'restaurante/editar_restaurante.html',context=context)
+###Editar restaurante existente
+##ÚNICO BUG NESSA CLASSE
+def editarRestaurante(request):
+    ##mecanismo de verificação de segurança
+    try:
+        ##verificando se usuário é proprietário
+        post = get_object_or_404(Restaurante,id=request.session['restaurante'],proprietario=request.user)
+    except:
+        ##verificando se usuário é usuário criador
+        post = get_object_or_404(Restaurante,id=request.session['restaurante'],usuario_criador=request.user)
+    
+    form = FormRestaurante(instance=post)
+    if(request.method == 'POST'):
+        form = FormRestaurante(request.POST,request.FILES, instance=post)
+        if(form.is_valid()):
+                post.nome_restaurante = form.cleaned_data['nome_restaurante']
+                post.proprietario = form.cleaned_data['proprietario']
+                post.logo_restaurante = form.cleaned_data['logo_restaurante']
+                post.save()
+                return redirect('/escolher_restaurante/')
+    
+    
+    context = {'form':form, post:post,}
+    return render(request,'restaurante/editar_restaurante.html',context=context)
 
+    
 ##deleta o restaurante
 def deletarRestaurante(request,nome_restaurante):
+    ## o único mecanismo de verificação para essa view é ser proprietário do restaurante
+    ## poís o usuário criador NÃO pode deletar o restaurante
     current_user = request.user
     if request.method == "GET":
         restaurante = get_object_or_404(Restaurante, proprietario=current_user,nome_restaurante=nome_restaurante)
@@ -67,11 +96,11 @@ def deletarRestaurante(request,nome_restaurante):
         ## if user = request.user
         try:
             nome_restaurante_form = form['nome_restaurante'].value()
-            print(nome_restaurante)
             restaurante = get_object_or_404(Restaurante, proprietario=current_user,nome_restaurante=nome_restaurante_form)
+            ## esse cookie é salvo para printar na próxima tela o nome do restaurante que foi deletado
             request.session['restaurante_removido'] = restaurante.nome_restaurante
             restaurante.delete()
-            return redirect ('/restaurante/restaurante_removido.html')
+            return redirect ('/restaurante_removido/')
         
         except:
             messages.info(request, 'Por favor, digite o nome do restaurante corretamente para prosseguir')
@@ -82,6 +111,8 @@ def deletarRestaurante(request,nome_restaurante):
 ##tela exibida após restaurante ser removido
 def restauranteRemovido(request):
     try:
+        ##nesse caso não necessita de confirmação de segurança
+        ##pois o request.session (sessão-token) o faz automaticamente
         restaurante_deletado = request.session['restaurante_removido']
         context = {'restaurante_deletado': restaurante_deletado,}
         return render(request, "restaurante/restaurante_deletado.html",context=context)
@@ -89,55 +120,53 @@ def restauranteRemovido(request):
     except:
         pass
 
-## essa view é para escolher qual restaurante acessar
-## no caso de ser usuario e ser proprietário de mais de um restaurante
-## e no caso de ser vendedor...
+###escolhendo qual restaurante acessar, para o caso de ter mais de um
+##caso seja usuário mesmo que tenha apenas um, ele irá o exibir para ser escolhido
 def restauranteChoose(request):
     ##verificando por tipos de usuário
-    if request.user.tipo_de_usuario == "U":
-        restaurantes = Restaurante.objects.filter(proprietario=request.user)
-        context = {'restaurantes': restaurantes,}
-    else:
-        restaurantes = Restaurante.objects.filter(usuario_criador=request.user)
-        context = {'restaurantes':restaurantes,}
+    restaurantes_proprietario = Restaurante.objects.filter(proprietario=request.user)
+    restaurantes_vendedor = Restaurante.objects.filter(usuario_criador=request.user)
+    restaurantes = []
+    for i in restaurantes_proprietario:
+        restaurantes.append(i)
+    for k in restaurantes_vendedor:
+        if not restaurantes.__contains__(k):
+            restaurantes.append(k)
     
-    return render(request,'restaurante/restaurante_choose.html',context=context)
+    restaurantes_len = 0
+    for w in restaurantes:
+        restaurantes_len += 1
+    if restaurantes_len >=1:
+        context = {'restaurantes': restaurantes,}
+        return render(request,'restaurante/restaurante_choose.html',context=context)
+    else:
+        return redirect('/adicionar_restaurante/')
 
 ##view de controle do sistema para passar os cookies com a finalidade de marcar o restaurante escolhido
 def restauranteCookie(request,restaurante):
-    if request.user.tipo_de_usuario == "U":
+    ##mecanismo de segurança implementado com sucesso
+    try:
         restaurante = get_object_or_404(Restaurante,id=restaurante,proprietario=request.user)
-    else:
-        restaurante = get_object_or_404(Restaurante,id=restaurante,usuario_criador=request.user)
-    
+    except:
+        try:
+            restaurante = get_object_or_404(Restaurante,id=restaurante,usuario_criador=request.user)
+        except: 
+            pass
     request.session['restaurante']=restaurante.id
     return redirect('/meus_produtos/')
-##CATEGORIAS:
 
-###MOSTRA TODAS AS SUPERCATEGORIAS
+##Supercategorias
 @login_required
 def menuView(request):
     ##verificando tipo de usuario
-    if request.user.tipo_de_usuario == "U":
-        try:
-            restaurante = get_object_or_404(Restaurante,proprietario=request.user)
-            request.session['restaurante']=restaurante.id
-        except:
-            try:
-                restaurante_id = request.session['restaurante']
-                mecanismo_seguranca = get_object_or_404(Restaurante,pk=restaurante_id,proprietario=request.user)
-                restaurante = mecanismo_seguranca.id
-            except:
-                return redirect('/escolher_restaurante/')
-    ##para o caso de o vendedor acessar os dados do restaurante
-    else:
-        try:
-            restaurante_id = request.session['restaurante']
-            mecanismo_seguranca = get_object_or_404(Restaurante,pk=restaurante_id,usuario_criador=request.user)
-            restaurante = mecanismo_seguranca.id
-        except:
-            ##caso ainda não tenha passado pela seleção
-            return redirect('/escolher_restaurante/')
+    try:
+       restaurante_id = request.session['restaurante']
+       try:
+           restaurante = get_object_or_404(Restaurante,id=restaurante_id,proprietario=request.user)
+       except:
+            restaurante = get_object_or_404(Restaurante,id=restaurante_id,usuario_criador=request.user)
+    except:
+        return redirect('/escolher_restaurante/')
     categoria = Classificacoes.objects.filter(restaurante=restaurante)
     quantidade = 0
     for i in categoria:
@@ -148,16 +177,19 @@ def menuView(request):
 
     return render(request,'menu/classificacao/menu.html',context=context)
 
-###MOSTRA TODAS AS CATEGORIAS
+##Mostrando todas as subcategorias, que são filhas de supercat (supercategorias) pai;
 @login_required
 def categoriasView(request,superCat):
     ##verificação de segurança:
-    restaurante_cookie = request.sessions['restaurante']
-    tipo_usuario = request.user.tipo_de_usuario
-    if tipo_usuario == "U":
-        restaurante = get_object_or_404(Restaurante,proprietario=request.user,pk=restaurante_cookie)
-    else:
-        restaurante = get_object_or_404(Restaurante,usuario_criador=request.user,pk=restaurante_cookie)
+    request.session['super_cat'] = superCat
+    restaurante_cookie = request.session['restaurante']
+    try:
+        ##mecanismo de segurança foi implementado
+        ## verificando se usuário é proprietario
+        restaurante = get_object_or_404(Restaurante,proprietario=request.user,id=restaurante_cookie)
+    except:
+        ##verificando se usuário é usuário criador
+        restaurante = get_object_or_404(Restaurante,usuario_criador=request.user,id=restaurante_cookie)
     superClassificacao = get_object_or_404(Classificacoes, nome_classificacao=superCat,restaurante=restaurante)
     categoria = Item_classificacao.objects.filter(classificacao=superClassificacao)
     quantidade = 0
@@ -169,47 +201,40 @@ def categoriasView(request,superCat):
 
     return render(request,'menu/classificacao/subcategoria.html',context=context)
 
-###ADICIONA CATEGORIAS 
+###Adicionando sub-categoria
 @login_required
 def addCategoria(request):
 
-    user_status = get_object_or_404(User, pk=request.user.id)
-    boolean_statuses = user_status.main
-    if boolean_statuses == True:
-        if request.method == "GET":
-            form = FormClassificacao()
-            context = {
+    if request.method == "GET":
+        form = FormClassificacao()
+        context = {
                 'form': form,
-                'status': boolean_statuses,
-            }
-            return render (request,'menu/classificacao/add_classificacao.html',context=context)
+        }
+        return render (request,'menu/classificacao/add_classificacao.html',context=context)
         
-        else:
-            form = FormClassificacao(request.POST)
-            if form.is_valid():
-                form.save()
-                return redirect('/meus_produtos/')
-                
-            else:
-                context = {'form': form,}
-                return render(request,'menu/classificacao/add_classificacao.html',context=context)
-
     else:
-        messages.info(request, 'Seu usuário não possui acesso a edição de dados!')
-        return redirect ('/')
+        form = FormClassificacao(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect('/meus_produtos/')
+                
+        else:
+            context = {'form': form,}
+            return render(request,'menu/classificacao/add_classificacao.html',context=context)
     
-###ADICIONA SUPERCATEGORIAS 
+### Adicionando super-categoria
 @login_required
 def addSuperCategoria(request):
-    ##corrigir formulário e passar o restaurante atual no mesmo
-    tipo_usuario = request.user.tipo_de_usuario
     restaurante_cookie = request.session['restaurante']
-    if tipo_usuario == "U":
-        restaurante = get_object_or_404(Restaurante,pk=restaurante_cookie,proprietario=request.user)
-    else:
-        restaurante = get_object_or_404(Restaurante,pk=restaurante_cookie,usuario_criador=request.user)
+    ##  mecanismo de segurança sendo implementado abaixo:
+    try:
+        ## verificando se usuário é proprietário do restaurante
+        restaurante = get_object_or_404(Restaurante,id=restaurante_cookie,proprietario=request.user)
+    except:
+        ## verificando se usuário é usuário criador do restaurante
+        restaurante = get_object_or_404(Restaurante,id=restaurante_cookie,usuario_criador=request.user)
     
-    ##metodos
+    ## metodos
     if request.method == "GET":
         form = FormClassificacoes()
         context = {
@@ -221,43 +246,61 @@ def addSuperCategoria(request):
     else:
         form = FormClassificacoes(request.POST,request.FILES)
         if form.is_valid():
-            form.save()
-            return redirect('/meus_produtos/')
-                
+            classificacao = form.cleaned_data['nome_classificacao']
+            restaurante_id = request.session['restaurante']
+            restaurante = get_object_or_404(Restaurante, id=restaurante_id)
+            ##verificando pré-existência
+            try:
+                get_list_or_404(Classificacoes,restaurante=restaurante,nome_classificacao=classificacao)
+                context = {'form': form,}
+                return render(request,'menu/classificacao/add_classificacoes.html',context=context)
+            except:
+                Classificacoes.objects.create(nome_classificacao=classificacao,restaurante=restaurante)
+                return redirect ('/meus_produtos/')
         else:
             context = {'form': form,}
             return render(request,'menu/classificacao/add_classificacoes.html',context=context)
 
-### DELETAR CATEGORIA
+### Deletar sub-categoria
 @login_required
 def deleteCategoria(request,categoria):
-    user_status = get_object_or_404(User, pk=request.user.id)
-    boolean_statuses = user_status.main
-    if boolean_statuses == True:
+    ## verificando se usuario possui categoria para deletar
+
+    ## implementando mecanismo de segurança:
+    try:
+        restaurante = get_object_or_404(Restaurante,id=request.session['restaurante'],proprietario=request.user)
+    except:
+        restaurante = get_object_or_404(Restaurante,id=request.session['restaurante'],usuario_criador=request.user)
+    ## mesmo não sendo utilizado nesse caso, caso o cookie restaurante não esteja funcionando, o usuário
+    ## será redirecionado para a '/escolher_restaurante/'
+    try:
         categorias = get_object_or_404(Item_classificacao, text=categoria).delete()
         return redirect ('/meus_produtos/')
-    else:
+    except:
         messages.info(request, 'Seu usuário não possui acesso a edição de dados!')
         return redirect ('/')
 
-### DELETAR SUPERCATEGORIA
+### Deletar-remover super-categoria
 @login_required
 def deleteSuperCategoria(request,super_categoria):
-    user_status = get_object_or_404(User, pk=request.user.id)
-    boolean_statuses = user_status.main
-    if boolean_statuses == True:
-        categorias = get_object_or_404(Classificacoes, nome_classificacao=super_categoria).delete()
+    ## implementando mecanismo de segurança
+    try:
+        ## verificando se usuário é proprietário do restaurante
+        restaurante  = get_object_or_404(Restaurante,id=request.session['restaurante'],proprietario=request.user)
+    except:
+        ## verificando se usuário é usuário criador do restaurante
+        restaurante = get_object_or_404(Restaurante,usuario_criador=request.user,id=request.session['restaurante'])
+    try:
+        categorias = get_object_or_404(Classificacoes, nome_classificacao=super_categoria,restaurante=restaurante).delete()
         return redirect ('/meus_produtos/')
-    else:
-        messages.info(request, 'Seu usuário não possui acesso a edição de dados!')
+    except:
+        messages.info(request, 'Erro')
         return redirect ('/')
 
-### ATUALIZAR A CATEGORIA (COM NOVOS VALORES)
+##Editar/atualizar subcategoria, passando novos valores(x=y) sobre os antigos
 @login_required
 def updateCategoria(request,categoria):
-    user_status = get_object_or_404(User, pk=request.user.id)
-    boolean_statuses = user_status.main
-    if boolean_statuses == True:
+    if request.session['restaurante']:
         post = get_object_or_404(Item_classificacao, text=categoria)
         form = FormClassificacao(instance=post)
         if(request.method == 'POST'):
@@ -269,7 +312,7 @@ def updateCategoria(request,categoria):
                     post.save()
                     return redirect('/meus_produtos/')
     else:
-        messages.info(request, 'Seu usuário não possui acesso a edição de dados!')
+        messages.info(request, 'Erro')
         return redirect ('/')
             
             
@@ -277,53 +320,75 @@ def updateCategoria(request,categoria):
     context = {'form': form,'post':post,}
     return render(request,'menu/classificacao/edit_categoria.html',context=context)
     
-###ATUALIZAR SUPER-CATEGORIA
+##Atualizar/editar supercategoria, passando novos valores (x=y)
 @login_required
 def updateSuperCategoria(request,super_categoria):
-    user_status = get_object_or_404(User, pk=request.user.id)
-    boolean_statuses = user_status.main
-    if boolean_statuses == True:
-        post = get_object_or_404(Classificacoes, nome_classificacao=super_categoria)
+    restaurante_pk = request.session['restaurante']
+    ##implementando mecanismo de segurança
+    try:
+        ## verificando se usuário é proprietário
+        restaurante = get_object_or_404(Restaurante,id=restaurante_pk,proprietario=request.user)
+    except:
+        ## verificando se usuário é usuário criador
+        restaurante = get_object_or_404(Restaurante,id=restaurante_pk,usuario_criador=request.user)
+    try:
+        post = get_object_or_404(Classificacoes, nome_classificacao=super_categoria,restaurante=restaurante)
         form = FormClassificacoes(instance=post)
         if(request.method == 'POST'):
             form = FormClassificacoes(request.POST,request.FILES, instance=post)
             if(form.is_valid()):
                     post = form.save(commit=False)
-                    post.nome_classificacao = form.cleaned_data['nome_classificacao']
-                    post.save()
-                    return redirect('/meus_produtos/')
-    else:
-        messages.info(request, 'Seu usuário não possui acesso a edição de dados!')
-        return redirect ('/')
-            
-            
+                    ##verificando condição de pre-existência
+                    try:
+                        new_obj_test = get_object_or_404(Classificacoes,nome_classificacao=form.cleaned_data['nome_classificacao'],restaurante=restaurante)
+                        if new_obj_test == post:
+                            post.nome_classificacao = form.cleaned_data['nome_classificacao']
+                            post.save()
+                            return redirect('/meus_produtos/')
+                           
+                        else:
+                            ##Em caso de dois cliques, será redirecionado(a) ao menu por motivo de segurança
+                             messages.info(request, 'A classificação informada já existe, digite outra classificação e tente novamente!')
+                             context = {'form': form,'post':post,}
+                             
+                             
+                    except:
+                        post.nome_classificacao = form.cleaned_data['nome_classificacao']
+                        post.save()
+                        return redirect('/meus_produtos/')        
        
-    context = {'form': form,'post':post,}
-    return render(request,'menu/classificacao/edit_super_categoria.html',context=context)
+        context = {'form': form,'post':post,}
+        return render(request,'menu/classificacao/edit_super_categoria.html',context=context)
 
+    except:
+        ##exibir tela de erro 404 ---> Error bad request(404)
+        pass
 
-###EXIBIR PRODUTOS DE ACORDO COM SUA CATEGORIA
+##Filtra por categoria, a super-categoria é passada através do cookie super-categoria
+##dado por: request.session['super-cat']
 @login_required
 def filtrarPorCategoria(request,categoria):
-    user_status = get_object_or_404(User, pk=request.user.id)
-    boolean_statuses = user_status.main
-    categoria_var = Item_classificacao.objects.filter(text=categoria).first()
-    
+    ##passando o restaurante como parâmetro para achar a respectiva categoria
+    try:
+        restaurante = get_object_or_404(Restaurante,id=request.session['restaurante'])
+    except:
+        restaurante = get_object_or_404(Restaurante,usuario_criador=request.user)
+    categoria_obj = get_object_or_404(Classificacoes,nome_classificacao=request.session['super_cat'],restaurante=restaurante)
+    categoria_var = get_object_or_404(Item_classificacao,text=categoria,classificacao=categoria_obj)
     produtos = Item.objects.filter(classificacao = categoria_var)
     quantidade = 0
     for i in produtos:
         quantidade += 1
     
     context = {
-        'produtos': produtos,'status': boolean_statuses,'quantidade':quantidade,
+        'produtos': produtos,'quantidade':quantidade,
     }
     return render(request,'menu/produtos/produtos_por_categoria.html',context=context)
-### ADICIONAR PRODUTO
+
+### Adicionar produto
 @login_required
 def adicionarProduto(request):
-    user_status = get_object_or_404(User, pk=request.user.id)
-    boolean_statuses = user_status.main
-    if boolean_statuses == True:
+    if request.session['restaurante']:
         if request.method == 'GET':
             form = FormItens()
             context = {
@@ -339,15 +404,12 @@ def adicionarProduto(request):
                 context = {'form':form,}
                 return render(request,'menu/produtos/adicionar_produto.html',context=context)
     else:
-        messages.info(request, 'Seu usuário não possui acesso a edição de dados!')
-        return redirect ('/')
+        return redirect('/meus_produtos/')
 
-###EDITAR PRODUTO
+### editar produto
 @login_required
 def editarProduto(request,produto):
-    user_status = get_object_or_404(User, pk=request.user.id)
-    boolean_statuses = user_status.main
-    if boolean_statuses == True:
+    if request.session['restaurante']:
         post = get_object_or_404(Item,item_nome=produto)
         form = FormEditItens(instance=post)
         if(request.method == 'POST'):
@@ -356,7 +418,6 @@ def editarProduto(request,produto):
                     post = form.save(commit=False)
                     post.item_nome = form.cleaned_data['item_nome']
                     post.classificacao = form.cleaned_data['classificacao']
-                    post.descricao = form.cleaned_data['descricao']
                     post.preco = form.cleaned_data['preco']
                     post.img = form.cleaned_data['img']
                     post.save()
@@ -367,28 +428,25 @@ def editarProduto(request,produto):
         context = {'form': form,'post':post,}
         return render(request,'menu/produtos/editar_produto.html',context=context)
     else:
-        messages.info(request, 'Seu usuário não possui acesso a edição de dados!')
-        return redirect ('/')
-            
+        return redirect ('/meus_produtos/')
         
-
-###APAGAR PRODUTO
+###Apagar produto
 @login_required
 def apagarProduto(request,produto):
-    user_status = get_object_or_404(User, pk=request.user.id)
-    boolean_statuses = user_status.main
-    if boolean_statuses == True:
+    if request.session['restaurante']:
         produto = get_object_or_404(Item,item_nome = produto).delete()
         return redirect ('/meus_produtos/')
     else:
         messages.info(request, 'Seu usuário não possui acesso a edição de dados!')
         return redirect ('/')
 
-###AJUSTES
+###Tela de ajustes
 @login_required
 def settings(request):
     return render(request,'configuracoes_internas/settings.html')
 
+##tela de boas vindas para novos usuários do virtual_menu
 def boas_vindas(request):
+    ##tela de bem vindo e cadastre-se para ser usuário do virtual menu
     return redirect('/cardapio/')
 

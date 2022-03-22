@@ -41,7 +41,7 @@ class FormRestaurante(forms.ModelForm):
         fields = ['nome_restaurante','proprietario','logo_restaurante']
         labels = {'nome_restaurante':('Nome do restaurante: '), 'proprietario':('Proprietário'),'logo_restaurante':('Logo do restaurante: ')}
         help_texts = {'proprietario': ('As opções disponíveis são todos os usuários convidados usando seu código de convite... ')}
-
+    
     
 class FormDeleteRestaurante(forms.ModelForm):
     class Meta:

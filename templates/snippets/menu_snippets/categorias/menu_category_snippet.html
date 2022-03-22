@@ -11,10 +11,8 @@
                             <div class="card-body">
                               <h4 class="card-title">{{cat.nome_classificacao}}</h4>
                               <a class="btn btn-primary my-1" href="/sub_categoria/{{cat.nome_classificacao}}/">Visualizar</a>
-                              {% if status == True %}
                               <a class="btn btn-dark" href="#" role="button" id="dropdownMenuLink" data-bs-toggle="dropdown" aria-expanded="false">
                                 Modificar 
-                                {% endif %}
                             </a>
                           
                             <ul class="dropdown-menu" aria-labelledby="dropdownMenuLink">
@@ -27,9 +25,7 @@
                         {% endfor %}
                         <div class="d-flex justify-content-center my-3">
                             <ul class="list-group d-flex justify-content-center">
-                                {% if status == True %}
                                 <a class="btn btn-success btn-lg my-1" href="/adicionar_super_categoria/">Adicionar Categoria</a>
-                                {% endif %}
                             </ul>
                         </div>
                     </div>

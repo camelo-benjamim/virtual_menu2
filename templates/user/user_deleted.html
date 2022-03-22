@@ -16,21 +16,16 @@
   </head>
   <body>
   <!--NAVBAR-->
-  <nav class="navbar navbar-light bg-dark">
-    <div class="container">
-        <a class="navbar-brand" href="#">
-        <img src="{%static '/img/logo2.png' %}" alt="" width="30" height="24">
-        </a>
-    </div>
-  </nav>
+  {% include 'user/user_navbars/deleted_usr.html'%}
   <!--FORM-->
-  <div class="container-sm my-2">
+  <div class="container-sm my-4">
   <h1>Usuário deletado com sucesso!</h1>
-  <div class= "container-fluid">
-  <p> Ficamos tristes com sua partida, esperamos que retorne à nossa plataforma o quanto antes., em caso de reclamação contate-nos pelo nosso email @mail</p>
+  <div class= "container-fluid text-center" style="max-width:500px;">
+  <h3> Ficamos tristes com sua partida, esperamos que retorne à nossa plataforma um dia...</h3>
   </div>
   </div>
     <!--JAVA SCRIPT-->
+    {% include 'footer/fixed_position_footer.html'%}
     <script src="{% static 'js/bootstrap.js'%}"></script>
     <!----->
   </body>

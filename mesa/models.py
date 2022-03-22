@@ -1,18 +1,14 @@
 from django.db import models
-
-## MIDDLEWARE PARA CURRENTUSER
-from django_currentuser.middleware import (
-    get_current_user, get_current_authenticated_user)
-
-
-from django_currentuser.db.models import CurrentUserField
+from menu.models import Restaurante
 
 # Create your models here.
 ##MESA DO RESTAURANTE
+##remover o criado por, pois foi substituído por restaurante
 class Mesa(models.Model):
     ##restaurante = models.ForeignKey(Restaurante,on_delete=models.CASCADE)
-    criado_por = CurrentUserField()
+    
     description = models.CharField(max_length=30)
+    restaurante = models.ForeignKey(Restaurante,on_delete=models.CASCADE)
 
     def __str__(self):
         return str(self.description)

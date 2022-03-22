@@ -1,0 +1,23 @@
+{%load static%}
+<nav class="navbar navbar-dark bg-dark">
+    <div class="container">
+        <a class="navbar-brand" href="#">
+            <h3>NKTE</h3>
+        </a>
+        {% if user.avatar %}
+        <div class="dropdown ms-3 justify-content-center">
+            <button class="btn btn-dark dropdown-toggle" id="bd-versions" data-bs-toggle="dropdown" aria-expanded="false" data-bs-display="static">
+                <img src="{{user.avatar.url}}" class="rounded-circle" alt="{{user.username}}" width="40" height="40">
+            </button>
+            <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="bd-versions">
+                <li><a class="dropdown-item current" aria-current="true" href="/docs/5.0/">Voltar ao menu principal</a></li>
+                <li><hr class="dropdown-divider"></li>
+                <li><a class="dropdown-item" href="https://getbootstrap.com/docs/4.6/">Acessar meus restaurantes</a></li>
+                <li><a class="dropdown-item" href="https://getbootstrap.com/docs/3.4/">Minhas licensas</a></li>
+                <li><hr class="dropdown-divider"></li>
+                <li><a class="dropdown-item" href="/docs/versions/">Configurações gerais</a></li>
+            </ul>
+        </div>
+        {% endif %}
+    </div>   
+  </nav>

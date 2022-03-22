@@ -16,12 +16,15 @@
     <title>Menu</title>
   </head>
   <body>
-  
-    {% include 'base/meus_produtos.html' %}
-    <!--END NAVBAR-->
+    {% if contador_geral == 1 or contador_geral == 0 %}
+    {% include 'restaurante/navbars/navbar_unique_restaurant.html' %}
+    {% else %}
+    {% include 'restaurante/navbars/navbar_two_or_more.html'%}
+    {% endif %}
+    <!--END NAVBAR--> 
     <!--AINDA NÃO FUNCIONA PERFEITAMENTE, IMPLEMENTAR CATEGORIAS-->
     <div class="container-fluid">
-        {% include 'snippets/restaurante/restaurante.html' with instance=obj %}
+        {% include 'restaurante/snippets/restaurante.html' with instance=obj %}
     </div>
     <!--FOOTER-->
     {% include 'footer/fixed_position_footer_dark.html' %}

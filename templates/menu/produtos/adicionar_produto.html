@@ -31,7 +31,6 @@
                 {% csrf_token %}
                 {{ form.img|as_crispy_field }}
                 <div class="my-2">{{ form.item_nome|as_crispy_field }}</div>
-                <div class="my-2">{{ form.descricao|as_crispy_field }}</div>
                 <div class="my-2">{{ form.preco|as_crispy_field }}</div>
                 <div class="my-2">{{ form.classificacao|as_crispy_field }}</div>
                 <div class="col text-center">

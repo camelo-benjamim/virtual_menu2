@@ -12,15 +12,18 @@
     
     <link rel="stylesheet" href="{% static 'css/bootstrap.css' %}">
 
-    <title>Configurações</title>
+    <title>Erro ao deletar</title>
   </head>
   <body>
-    {% include 'base/danger_base.html'%}
+    {% include 'user/user_navbars/deleted_usr.html'%}
     <!--NEED DIV STYLE AND BUTTON TO SAVE!-->
     {% block content %}
     <div class="container">
-      <h2 class="text-center my-2">O usuário que você está tentando deletar já foi deletado anteriormente!</h2>
-
+      <h2 class="bg-warning text-dark text-center">Para deletar seu usuário, informe corretamente o username do mesmo</h2>
+      <div class="container-sm w-50 text-center">
+        <h3>Queremos que continue usando nossa plataforma, porém caso realmente deseje deletar seu usuário, clique no botão abaixo:</h3>
+        <a class="btn btn-warning" href="/auth/user_delete/">Clique me</a>
+      </div>
     </div>
     
     {%endblock %}

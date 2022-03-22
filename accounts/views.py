@@ -37,14 +37,10 @@ def Login(request):
 def ChangeUsr(request):
         usr = request.user
         id_usr = usr.id
-    ##O USUÁRIO SÓ PODE DELETAR A SÍ MESMO
-    
         post = get_object_or_404(User, pk=id_usr)
-        comparation_obj = get_object_or_404(User, pk=id_usr)
         form = UserChangeForm(instance=post)
         if(request.method == 'POST'):
             form = UserChangeForm(request.POST,request.FILES,instance=post)
-
             if(form.is_valid()):
                 post = form.save(commit=False)
                 post.postal_code = form.cleaned_data['postal_code']
@@ -56,6 +52,7 @@ def ChangeUsr(request):
                 post.number_ref = form.cleaned_data['number_ref']
                 post.contacts_phone = form.cleaned_data['contacts_phone']
                 post.save()
+                return redirect ('/')
             
         
         return render(request, 'user/edit_user.html', {'form': form, 'post' : post})
@@ -79,16 +76,16 @@ def usrDelete(request):
             user = form['username'].value()
             u = User.objects.get(username=user)
             u.delete()
+            request.session['usuario_deletado'] = user
             return redirect ('/auth/user_deleted/')
 
-        except User.DoesNotExist:   
+        except:  
             return render(request, 'user/delete_error.html')
-
-        except Exception as e: 
-            return render(request, 'user/delete_error.html')
+            
 
         
     return render(request, 'user/delete_user.html',context)
 
 def userDeleted(request):
-    return render(request, "user/user_deleted.html")
+    if request.session['usuario_deletado']:
+        return render(request, "user/user_deleted.html")

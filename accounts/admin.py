@@ -9,7 +9,7 @@ class CustomUserAdmin(UserAdmin):
     list_filter  = ('postal_code',)
     search_fields = ('email','username',)
     ordering = ('date_joined',)
-    readonly_fields = ['username','first_name','last_name','email','postal_code','city','state','address','district','number_ref','contacts_phone','avatar','last_login','is_active','date_joined','user_permissions','groups','tipo_de_usuario','codigo_convidado','codigo_de_convite']
+    readonly_fields = ['username','first_name','last_name','email','postal_code','city','state','address','district','number_ref','contacts_phone','avatar','last_login','is_active','date_joined','user_permissions','groups','codigo_de_convite','codigo_convidado']
     
     def has_add_permission(self, request,obj=None):
         return False

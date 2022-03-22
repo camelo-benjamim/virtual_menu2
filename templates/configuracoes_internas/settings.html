@@ -59,7 +59,6 @@
                       </div>
                     </div>
                       
-                        {% if status == True %}
                             <h3 class="text-center my-3">Métodos de pagamento:</h3>
                             <div class="container-fluid">
                                 <div class="row justify-content-center">
@@ -114,7 +113,7 @@
                                   </div>
                                 </div>
                               </div>
-                                {% endif %}
+                                
                                 <h3 class="text-center my-3">Usuário:</h3>
                                 <div class="container-fluid">
                                     <div class="row justify-content-center">
@@ -129,7 +128,6 @@
                                                 </div>
                                             </div>
                                         </div>
-                                        {% if status == True %}
                                             <div class="card mx-2 my-2" style="width: 18rem;">
                                                 <div class="card-body">
                                                     <h5 class="card-title">Adicionar novo usuário como filial</h5>
@@ -157,7 +155,6 @@
                                         </div>
                                     </div>
                                 </div>
-                            {% else %}
                                 <div class="row justify-content-center">
                                     <h3 class="text-center my-3">
                                         Sistema de Push:
@@ -176,7 +173,6 @@
                                         </div>
                                     </div>
                                 </div>
-                            {% endif %}
                         {% endblock %} 
                         {% include 'footer/register_footer.html' %}
                         <!-- Footer -->

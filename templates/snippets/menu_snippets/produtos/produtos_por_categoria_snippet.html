@@ -36,8 +36,7 @@
                               <h6 class="card-subtitle mb-2 text-muted">{{prod.descricao}}</h6>
                               {% endif %}
                               <h5 class="card-subtitle mb-2 text-muted">R$ {{prod.preco}}</h5>
-                                
-                              {% if status == True %}
+                            
                               <a class="btn btn-dark" href="#" role="button" id="dropdownMenuLink" data-bs-toggle="dropdown" aria-expanded="false">
                                 Modificar 
                             </a>
@@ -45,21 +44,21 @@
                               <li><a class="dropdown-item" href="/editar_produto/{{prod.item_nome}}/">Editar categoria</a></li>
                               <li><a class="dropdown-item bg-danger text-light" href="/apagar_produto/{{prod.item_nome}}/">Remover categoria</a></li>
                             </ul>
-                            {%endif%}
+                           
                             </div>
                         </div>
 
                         {%endif%}
                         {% endfor %}
 
-                        {% if status == True %}
+
                         <div class="d-flex justify-content-center my-3">
                             <ul class="list-group d-flex justify-content-center">
                                 <a class="btn btn-success btn-lg my-1" href="/adicionar_produto/">Adicionar Produto</a>
                                 
                             </ul>
                         </div>
-                        {%endif%}
+                      
                     </div>
                 
                 
