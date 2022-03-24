@@ -11,3 +11,7 @@ class Licensa(models.Model):
     restaurante = models.ForeignKey(Restaurante,on_delete=models.CASCADE)
     meses = models.PositiveSmallIntegerField(default=6)
     data_inicio_licensa = models.DateTimeField(auto_now_add=True,editable=False)
+
+
+##TERCEIRIZAR COM API DO COBRE FÁCIL 
+##PROVAVELMENTE DISPONÍVEL EM PYTHON
