@@ -5,11 +5,11 @@
                 <h1>Métodos de pagamento:</h1>
                 <div class="container">
                     <div class="row justify-content-center">
-                        {% for metodo in metodos %}
+                        {% for metodo in metodos%}
                         <div class="card my-2 mx-2" style="width: 18rem;">
                             <div class="card-body">
-                              <h4 class="card-title">{{ metodo.pagamento }}</h4>
-                              <a class="btn btn-danger my-1" href="/pagamento/remover_metodo_de_pagamento/{{metodo.pagamento}}/">Deletar</a>
+                              <h4 class="card-title">{{ metodo.nome_metodo_de_pagamento }}</h4>
+                              <a class="btn btn-danger my-1" href="/pagamento/remover_metodo_de_pagamento/{{metodo.nome_metodo_de_pagamento}}/">Deletar</a>
                             </div>
                         </div>
                         {% endfor %}

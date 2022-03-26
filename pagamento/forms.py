@@ -6,6 +6,6 @@ from pagamento.models import *
 ###formulário de Pagamento
 class FormPagamento(forms.ModelForm):
     class Meta:
-        model = Pagamento
-        fields = ['pagamento']
-        labels = {'pagamento':('Metodo de pagamento: ')}
+        model = MetodosDePagamento
+        fields = ['nome_metodo_de_pagamento']
+        labels = {'nome_metodo_de_pagamento':('Metodo de pagamento: ')}

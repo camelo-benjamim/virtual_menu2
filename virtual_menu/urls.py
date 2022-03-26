@@ -29,7 +29,7 @@ urlpatterns = [
     path('', include('menu.urls')),
     path('auth/',include('accounts.urls')),
     path('mesa/',include ('mesa.urls')),
-    ##path('pagamento/',include('pagamento.urls')),
+    path('pagamento/',include('pagamento.urls')),
     ##path('cardapio/',include('carrinho.urls')),
     ##path('relatorios/',include('relatorios.urls')),
     ##path('push/',include('push.urls')),

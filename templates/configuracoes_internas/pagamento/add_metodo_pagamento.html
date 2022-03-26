@@ -19,11 +19,11 @@
         <div class=" d-flex justify-content-center">
             <form action="/pagamento/adicionar_metodo_de_pagamento/"
                   method="post"
-                  class="col-sm-4 mt-5 mb-5 pt-3 pb-2 px-5 bg-light border border-secondary"
+                  class="col-sm-4 mt-5 mb-5 pt-3 pb-2 px-5"
                   enctype="multipart/form-data">
                 <h1 class="text-center">Adicionar Método:</h1>
                 {% csrf_token %}
-                <div class="my-2">{{ form.pagamento|as_crispy_field }}</div>
+                <div class="my-2">{{ form.nome_metodo_de_pagamento|as_crispy_field }}</div>
                 {% if messages %}
                     {% for message in messages %}<div class="alert alert-danger" role="alert">{{ message }}</div>{% endfor %}
                 {% endif %}

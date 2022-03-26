@@ -13,6 +13,10 @@ def verMesas(request):
     ##mecanismo de segurança anti-fraude nos cookies sendo passado nas views
     ##verificando se usuário é proprietário do restaurante abaixo:
     try:
+        request.session['restaurante']
+    except:
+        return redirect ('/escolher_restaurante/')
+    try:
         restaurante = get_object_or_404(Restaurante,id=request.session['restaurante'],proprietario=request.user)
     except:
         ##verificando se usuário é usuário criador do restaurante: 
@@ -73,13 +77,17 @@ def deleteMesa(request,description):
 ## VIEW PARA ACESSAR DELETAR MESA
 def mesaConsult(request):
     ##Mecanismo anti-fraude
-    restaurante = request.session['restaurante']
+    try:
+        request.session['restaurante']
+    except:
+        return redirect ('/escolher_restaurante/')
+    
     try:
         ##verificando se é proprietário
-        restaurante_obj = get_object_or_404(Restaurante,id=restaurante,proprietario=request.user)
+        restaurante_obj = get_object_or_404(Restaurante,id=request.session['restaurante'],proprietario=request.user)
     except:
         ##verificando se é usuário criador 
-        restaurante_obj = get_object_or_404(Restaurante,id=restaurante, proprietario=request.user)
+        restaurante_obj = get_object_or_404(Restaurante,id=request.session['restaurante'], usuario_criador=request.user)
     mesas = Mesa.objects.filter(restaurante=restaurante_obj)
     quantidade = 0
     for i in mesas:

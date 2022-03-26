@@ -29,10 +29,11 @@ class FormItens(forms.ModelForm):
     def __init__(self, classificacao,*args, **kwargs): 
             super(FormItens, self).__init__(*args, **kwargs)
             queryset_classificacao = Item_classificacao.objects.filter(id=classificacao)
-            super_categoria = get_object_or_404(Classificacoes,id=queryset_classificacao[0].id)
-            categorias_irmas = Item_classificacao.objects.filter(classificacao=super_categoria)
-            print("categorias irmãs{}".format(categorias_irmas))
-            self.fields['classificacao'].queryset = queryset_classificacao
+            super_classificacao_id = queryset_classificacao[0].classificacao.id
+            ##pegando obj
+            superclassificacao_obj = get_object_or_404(Classificacoes,id=super_classificacao_id)
+            irmas = Item_classificacao.objects.filter(classificacao=superclassificacao_obj)
+            self.fields['classificacao'].queryset = (queryset_classificacao | irmas).distinct()
     class Meta:
         model = Item
         fields = ['item_nome','classificacao','preco','img']
@@ -40,7 +41,14 @@ class FormItens(forms.ModelForm):
     
 ## FORMULÁRIO PARA EDIÇAO DE ITENS  
 class FormEditItens(forms.ModelForm):
-    
+    def __init__(self, classificacao,*args, **kwargs): 
+        super(FormEditItens, self).__init__(*args, **kwargs)
+        queryset_classificacao = Item_classificacao.objects.filter(id=classificacao)
+        super_classificacao_id = queryset_classificacao[0].classificacao.id
+        ##pegando obj
+        superclassificacao_obj = get_object_or_404(Classificacoes,id=super_classificacao_id)
+        irmas = Item_classificacao.objects.filter(classificacao=superclassificacao_obj)
+        self.fields['classificacao'].queryset = (queryset_classificacao | irmas).distinct()
     class Meta:
         model = Item
         fields = ['item_nome','classificacao','preco','img']

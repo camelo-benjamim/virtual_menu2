@@ -421,9 +421,9 @@ def adicionarProduto(request):
 def editarProduto(request,produto):
     if request.session['restaurante']:
         post = get_object_or_404(Item,item_nome=produto)
-        form = FormEditItens(instance=post)
+        form = FormEditItens(classificacao=request.session['classificacao'],instance=post)
         if(request.method == 'POST'):
-            form = FormEditItens(request.POST,request.FILES, instance=post)
+            form = FormEditItens(request.session['classificacao'],request.POST,request.FILES, instance=post)
             if(form.is_valid()):
                     post = form.save(commit=False)
                     post.item_nome = form.cleaned_data['item_nome']

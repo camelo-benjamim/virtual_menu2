@@ -8,83 +8,73 @@ from django.contrib import messages
 ### RESTAURANTE ADICIONANDO METODOS DE Pagamento
 @login_required
 def adicionarMetodoDePagamento(request):
-    user_status = get_object_or_404(User, pk=request.user.id)
-    boolean_statuses = user_status.main
-    if boolean_statuses == True:
-        if request.method == "GET":
-            form = FormPagamento()
+    if request.method == "GET":
+        form = FormPagamento()
+        context = {'form':form,}
+        return render(request,'configuracoes_internas/pagamento/add_metodo_pagamento.html',context=context)
+
+    else:
+        form = FormPagamento(request.POST, request.FILES)
+        restaurante = request.session['restaurante']
+        restaurante = get_object_or_404(Restaurante,id=restaurante)
+        if form.is_valid():
+            ##CRIANDO OBJETO E PASSANDO O RESTAURANTE COMO ARGUMENTO AQUI AO INVÉS DE NOS FORMS
+            MetodosDePagamento.objects.create(restaurante=restaurante,nome_metodo_de_pagamento = form.cleaned_data['nome_metodo_de_pagamento'])
+            return redirect ('/settings/')
+        else: 
+            print("formulário inválido")
             context = {'form':form,}
             return render(request,'configuracoes_internas/pagamento/add_metodo_pagamento.html',context=context)
-
-        else:
-            form = FormPagamento(request.POST, request.FILES)
-            if form.is_valid():
-                form.save()
-                return redirect ('/settings/')
-            else: 
-                context = {'form':form,}
-                return render(request,'configuracoes_internas/pagamento/add_metodo_pagamento.html',context=context)
-                
-    else:
-        messages.info(request, 'Seu usuário não possui acesso a edição de dados!')
-        return redirect ('/settings/')
 
 ### VER TODOS OS MÉTODOS DE Pagamento
 @login_required
 def verMetodosDePagamento(request):
-    user_status = get_object_or_404(User, pk=request.user.id)
-    boolean_statuses = user_status.main
-    if boolean_statuses == True:
-        metodos = Pagamento.objects.all()
-        quantidade = 0
-        for i in metodos:
-            quantidade += 1
-        context = {
-            'metodos' : metodos, 'status': boolean_statuses, 'quantidade': quantidade,
-        }
+    try:
+        restaurante = get_object_or_404(Restaurante,pk=request.session['restaurante'])
+    except:
+        return redirect ('/escolher_restaurante/')
+    metodos = MetodosDePagamento.objects.filter(restaurante=restaurante)
+    quantidade = 0
+    for i in metodos:
+        quantidade += 1
+    context = {
+        'metodos' : metodos,'quantidade': quantidade,
+    }
 
-        return render(request,'configuracoes_internas/pagamento/metodos_de_pagamento.html',context=context)
-
-    else:
-        messages.info(request, 'Seu usuário não possui acesso a edição de dados!')
-        return redirect ('/settings/')
+    return render(request,'configuracoes_internas/pagamento/metodos_de_pagamento.html',context=context)
 
 ### REMOVER MÉTODO DE Pagamento
 
 def removeMetodosDePagamento(request):
-    user_status = get_object_or_404(User, pk=request.user.id)
-    boolean_statuses = user_status.main
-    if boolean_statuses == True:
-        metodos = Pagamento.objects.all()
-        quantidade = 0
-        for i in metodos:
-            quantidade += 1
-        context = {
-            'metodos' : metodos, 'status': boolean_statuses, 'quantidade': quantidade,
-        }
+    try:
+        restaurante = get_object_or_404(Restaurante,pk=request.session['restaurante'])
+    except:
+        return redirect ('/escolher_restaurante/')
+    
+    metodos = MetodosDePagamento.objects.filter(restaurante=restaurante)
+    quantidade = 0
+    for i in metodos:
+        quantidade += 1
+    context = {
+        'metodos' : metodos, 'quantidade': quantidade,
+    }
 
-        return render(request,'configuracoes_internas/pagamento/consult_metodo_pagamento.html',context=context)
-
-    else:
-        messages.info(request, 'Seu usuário não possui acesso a edição de dados!')
-        return redirect ('/settings/')
-
+    return render(request,'configuracoes_internas/pagamento/consult_metodo_pagamento.html',context=context)
 ### REMOVENDO MÉTODO DE Pagamento 
 @login_required
 def removerMetodoDePagamento(request,metodo):
-    user_status = get_object_or_404(User, pk=request.user.id)
-    boolean_statuses = user_status.main
-    if boolean_statuses == True:
-        metod0 = get_object_or_404(Pagamento, pagamento=metodo).delete()
-        return redirect ('/settings/')
-    else:
-        messages.info(request, 'Seu usuário não possui acesso a edição de dados!')
-        return redirect ('/settings/')
+    metod0 = get_object_or_404(MetodosDePagamento, nome_metodo_de_pagamento=metodo).delete()
+    return redirect ('/settings/')
     
 
 ## CONSULTAR MÉTODOS DE Pagamento
 def pagamentoConsut(request):
-    metodos = Pagamento.objects.all()
+    try:
+        restaurante = request.session['restaurante']
+        restaurante = get_object_or_404(Restaurante,id=restaurante)
+    except:
+        return redirect ('/escolher_restaurante/')
+    metodos = MetodosDePagamento.objects.filter(restaurante=restaurante)
     context = {
         'metodos' : metodos,
     }
