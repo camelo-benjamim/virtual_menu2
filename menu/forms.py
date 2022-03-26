@@ -28,7 +28,11 @@ class FormClassificacao(forms.ModelForm):
 class FormItens(forms.ModelForm):
     def __init__(self, classificacao,*args, **kwargs): 
             super(FormItens, self).__init__(*args, **kwargs)
-            self.fields['classificacao'].queryset = Item_classificacao.objects.filter(id=classificacao)
+            queryset_classificacao = Item_classificacao.objects.filter(id=classificacao)
+            super_categoria = get_object_or_404(Classificacoes,id=queryset_classificacao[0].id)
+            categorias_irmas = Item_classificacao.objects.filter(classificacao=super_categoria)
+            print("categorias irmãs{}".format(categorias_irmas))
+            self.fields['classificacao'].queryset = queryset_classificacao
     class Meta:
         model = Item
         fields = ['item_nome','classificacao','preco','img']

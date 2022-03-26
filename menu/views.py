@@ -397,8 +397,6 @@ def filtrarPorCategoria(request,categoria):
 ##COLOCAR PONTO FIXO
 @login_required
 def adicionarProduto(request):
-    print("variável categoria: ")
-    print(request.session['classificacao'])
     if request.session['restaurante']:
         if request.method == 'GET':
             ##passar classificação nos forms
