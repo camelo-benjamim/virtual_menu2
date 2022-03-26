@@ -8,7 +8,7 @@ from django.contrib import messages
 ##Restaurante --> funções (adicionar,editar e remover)
 def adicionarRestaurante(request):
     if request.method == "GET":
-        form = FormRestaurante()
+        form = FormRestaurante(current_user=request.user)
         contador_restaurantes1 = Restaurante.objects.filter(proprietario=request.user)
         contador_restaurantes2 = Restaurante.objects.filter(usuario_criador=request.user)
         contador_geral = 0
@@ -26,7 +26,7 @@ def adicionarRestaurante(request):
         context = {'form': form,'contador_geral': contador_geral,}
         return render(request,'restaurante/adicionar_restaurante.html',context=context)  
     else:
-        form = FormRestaurante(request.POST,request.FILES)
+        form = FormRestaurante(request.user,request.POST,request.FILES)
         if form.is_valid():
             proprietario = form.cleaned_data['proprietario']
             nome = form.cleaned_data['nome_restaurante']
@@ -50,7 +50,8 @@ def adicionarRestaurante(request):
                     return redirect ('/meus_produtos/')
             else:
                 messages.info(request, 'Você já adicionou um restaurante para este mesmo proprietário com esse nome, tente novamente com outro nome')
-        
+      
+            
         context = {'form':form,}
         return render(request,'restaurante/adicionar_restaurante.html',context=context)
 ###Editar restaurante existente
@@ -58,18 +59,21 @@ def adicionarRestaurante(request):
 def editarRestaurante(request):
     ##mecanismo de verificação de segurança
     try:
+        request.session['restaurante']
+    except:
+        return redirect ('/escolher_restaurante/')
+    try:
         ##verificando se usuário é proprietário
         post = get_object_or_404(Restaurante,id=request.session['restaurante'],proprietario=request.user)
     except:
         ##verificando se usuário é usuário criador
         post = get_object_or_404(Restaurante,id=request.session['restaurante'],usuario_criador=request.user)
-    
-    form = FormRestaurante(instance=post)
+    post.proprietario == None
+    form = FormEditRestaurante(instance=post)
     if(request.method == 'POST'):
-        form = FormRestaurante(request.POST,request.FILES, instance=post)
+        form = FormEditRestaurante(request.POST,request.FILES, instance=post)
         if(form.is_valid()):
                 post.nome_restaurante = form.cleaned_data['nome_restaurante']
-                post.proprietario = form.cleaned_data['proprietario']
                 post.logo_restaurante = form.cleaned_data['logo_restaurante']
                 post.save()
                 return redirect('/escolher_restaurante/')
@@ -204,16 +208,18 @@ def categoriasView(request,superCat):
 ###Adicionando sub-categoria
 @login_required
 def addCategoria(request):
-
     if request.method == "GET":
-        form = FormClassificacao()
+        ##passando restaurante como argumento para o form do init
+        ##implementando outro mecanismo de segurança contre fraude nos cookies
+        form = FormClassificacao(restaurante=request.session['restaurante'])
         context = {
                 'form': form,
         }
         return render (request,'menu/classificacao/add_classificacao.html',context=context)
         
     else:
-        form = FormClassificacao(request.POST)
+        
+        form = FormClassificacao(request.session['restaurante'],request.POST)
         if form.is_valid():
             form.save()
             return redirect('/meus_produtos/')
@@ -302,9 +308,9 @@ def deleteSuperCategoria(request,super_categoria):
 def updateCategoria(request,categoria):
     if request.session['restaurante']:
         post = get_object_or_404(Item_classificacao, text=categoria)
-        form = FormClassificacao(instance=post)
+        form = FormClassificacao(restaurante=request.session['restaurante'],instance=post)
         if(request.method == 'POST'):
-            form = FormClassificacao(request.POST,request.FILES, instance=post)
+            form = FormClassificacao(request.session['restaurante'],request.POST,request.FILES, instance=post)
             if(form.is_valid()):
                     post = form.save(commit=False)
                     post.text = form.cleaned_data['text']
@@ -375,6 +381,7 @@ def filtrarPorCategoria(request,categoria):
         restaurante = get_object_or_404(Restaurante,usuario_criador=request.user)
     categoria_obj = get_object_or_404(Classificacoes,nome_classificacao=request.session['super_cat'],restaurante=restaurante)
     categoria_var = get_object_or_404(Item_classificacao,text=categoria,classificacao=categoria_obj)
+    request.session['classificacao'] = categoria_var.id
     produtos = Item.objects.filter(classificacao = categoria_var)
     quantidade = 0
     for i in produtos:
@@ -386,17 +393,22 @@ def filtrarPorCategoria(request,categoria):
     return render(request,'menu/produtos/produtos_por_categoria.html',context=context)
 
 ### Adicionar produto
+##MEU PONTO DE PARADA
+##COLOCAR PONTO FIXO
 @login_required
 def adicionarProduto(request):
+    print("variável categoria: ")
+    print(request.session['classificacao'])
     if request.session['restaurante']:
         if request.method == 'GET':
-            form = FormItens()
+            ##passar classificação nos forms
+            form = FormItens(classificacao=request.session['classificacao'])
             context = {
                 'form': form,
             }
             return render(request,'menu/produtos/adicionar_produto.html',context=context)
         else:
-            form = FormItens(request.POST, request.FILES)
+            form = FormItens(request.session['classificacao'],request.POST, request.FILES)
             if form.is_valid():
                 form.save()
                 return redirect ('/meus_produtos/')

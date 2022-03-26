@@ -5,7 +5,9 @@ from django_currentuser.middleware import (
 
 from django_currentuser.db.models import CurrentUserField
 from menu.models import Restaurante
-# Create your models here.
+# Create your models here
+
+##SINCRONIZAR COM API DO COBRE FÁCIL...
 class Licensa(models.Model):
     usuario_vendedor = CurrentUserField()
     restaurante = models.ForeignKey(Restaurante,on_delete=models.CASCADE)

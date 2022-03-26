@@ -5,8 +5,8 @@ from django.contrib.auth.models import Group
 # Register your models here.
 class CustomUserAdmin(UserAdmin):
     model = User
-    list_display = ['username','email','contacts_phone','codigo_de_convite']
-    list_filter  = ('postal_code',)
+    list_display = ['username','email','contacts_phone','codigo_de_convite','codigo_convidado',]
+    list_filter  = ('postal_code','codigo_convidado',)
     search_fields = ('email','username',)
     ordering = ('date_joined',)
     readonly_fields = ['username','first_name','last_name','email','postal_code','city','state','address','district','number_ref','contacts_phone','avatar','last_login','is_active','date_joined','user_permissions','groups','codigo_de_convite','codigo_convidado']
