@@ -30,6 +30,7 @@ class ClassificacoesAdmin(admin.ModelAdmin):
 
 @admin.register(Restaurante)
 class RestauranteAdmmin(admin.ModelAdmin):
+    list_display = ('id','nome_restaurante')
     search_filter = ('nome_restaurante')
     
 # Register your models here.

@@ -7,8 +7,8 @@ urlpatterns = [
     path('pedidos/',dashboard),
     path('ver_pedido/<int:id>/', verPedido),
     path('meu_carrinho/',ver_carrinho),
-    path('<str:restaurante>/',cardapio),
-    path('<str:mesa>/',cardapio_carrinho),
+    path('',cardapio),
+    path('<str:mesa>/<str:restaurante>/<int:id>/',cardapio_carrinho),
     path('super_categoria/<str:super_categoria>/',categoria_cookie),
     
     

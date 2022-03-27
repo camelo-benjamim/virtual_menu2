@@ -12,7 +12,7 @@ https://docs.djangoproject.com/en/3.2/ref/settings/
 ##
 import os
 from pathlib import Path
-from pickle import TRUE
+
 
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -51,9 +51,8 @@ INSTALLED_APPS = [
     
     'mesa',
     'pagamento',
-    ##'carrinho',
+    'carrinho',
     ##'relatorios',
-    ##'push',
     ### APLICATIVOS DO DJANGO
     'django.contrib.admin',
     'django.contrib.auth',

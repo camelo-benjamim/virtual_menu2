@@ -11,9 +11,8 @@ from django.contrib.auth.decorators import login_required
 from django.conf import settings
 from django.contrib import messages
 from dateutil.parser import parse
-from push.models import Connect
 import time
-from pushbullet import Pushbullet
+
 
 ####
 
@@ -64,34 +63,32 @@ def ver_carrinho(request):
         messages.info(request, 'POR FAVOR, ESCANEIEI O QR CODE PARA QUE O SISTEMA IDENTIFIQUE SUA MESA!')
         return redirect('/cardapio/')
 
-def cardapio_carrinho(request,mesa):
-    if request.user.is_active == True:
-        return redirect('../pedidos/')
-    else:
-        mesa = get_object_or_404(Mesa,description=mesa)
-        try:
-            session_key = request.COOKIES[settings.SESSION_COOKIE_NAME]
-        except:
-            request.session.create()
+def cardapio_carrinho(request,mesa,restaurante,id):
+    restaurante = get_object_or_404(Restaurante,id=id,nome_restaurante=restaurante)
+    request.session['restaurante_servidor'] = restaurante.id
+    mesa = get_object_or_404(Mesa,description=mesa,restaurante=restaurante)
+    try:
+        session_key = request.COOKIES[settings.SESSION_COOKIE_NAME]
+    except:
+        request.session.create()
         session_key = request.session.session_key
         request.session['mesa_session'] = mesa.description
-        print(request.session['mesa_session'])
         cart = Cart.objects.filter(session_key=session_key,concluido=False)
-        try:
-            
-            cart_print = cart[0]
-            cart_print.mesa_pedido = mesa
-            cart_print.save()
-            return redirect('/cardapio/')
-        except:
-            novo_carrinho = Cart.objects.create(session_key=session_key,mesa_pedido=mesa,concluido=False)
-            novo_carrinho.save()
-            return redirect ('/cardapio/')
+    try:
+        cart_print = cart[0]
+        cart_print.mesa_pedido = mesa
+        cart_print.save()
+        return redirect('/cardapio/')
+    except:
+        novo_carrinho = Cart.objects.create(session_key=session_key,mesa_pedido=mesa,concluido=False)
+        novo_carrinho.save()
+        return redirect ('/cardapio/')
 
 def categoria_cookie(request,super_categoria):
     request.session['categoria'] = super_categoria
     return redirect('/')
 
+##CONTÉM ERROS, VERIFICAR E CORRIGIR
 def cardapio(request):
     if request.user.is_active == True:
         return redirect('/cardapio/pedidos/')
@@ -99,7 +96,6 @@ def cardapio(request):
         if request.method == "GET":
             try:
                 request.session['categoria']
-                print(request.session['categoria'])
             except:
                 request.session['categoria'] = None
             super_categorias = Classificacoes.objects.all()
@@ -112,13 +108,7 @@ def cardapio(request):
             for cat in categorias:
                 produtos_adicionar = Item.objects.filter(classificacao=cat)
                 for pr in produtos_adicionar:
-                    produtos.append(pr)
-                    
-            print(produtos)
-            print("=== ITENS ===")
-            print(produtos)
-
-                
+                    produtos.append(pr)                
             form = FormPedido()
             try:
                 session_key = request.COOKIES[settings.SESSION_COOKIE_NAME]
@@ -136,7 +126,9 @@ def cardapio(request):
             context = {'super_categorias': super_categorias,'categorias':categorias,'produtos':produtos,'form':form, 'quantidade_cart': quantidade_cart,'lista_itens':lista_itens,}        
             return render(request,'pedidos/cliente/cardapio.html',context=context)
         else:
+            ##ERRO NO MÉTODO POST
             try:
+                print('testando o método post')
                 item = request.POST.get("item")
                 quantidade = request.POST.get("quantidade")
                 session_key = request.COOKIES[settings.SESSION_COOKIE_NAME]
@@ -176,6 +168,7 @@ def cardapio(request):
                     except:
                         mesa_session = request.session['mesa_session']
                         print(mesa_session)
+                        ##PROVÁVEL ERRO
                         mesa = get_object_or_404(Mesa,description=mesa_session)
                         novo_cart = Cart.objects.create(session_key=session_key,mesa_pedido=mesa)
                         pedido_a_adicionar = Pedido.objects.filter(session_key=session_key,concluido=False)
@@ -249,7 +242,9 @@ def dashboard(request):
     if request.user.is_authenticated: 
         carrinhos_filtro1 = Cart.objects.filter(concluido=True,finalizado=False)
         ###EXCLUINDO O QUE N PERTENCE AO USUARIO DA QUERYSET
-        mesas = Mesa.objects.filter(criado_por=request.user)
+        restaurante = request.session['restaurante']
+        restaurante = get_object_or_404(Restaurante, id=restaurante)
+        mesas = Mesa.objects.filter(restaurante=restaurante)
         carrinhos = []
         for i in carrinhos_filtro1:
             if i.mesa_pedido in mesas:
