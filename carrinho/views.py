@@ -55,7 +55,7 @@ def ver_carrinho(request):
             ###VERIFICANDO ALTERAÇOES
             
             if quant_alteracoes == 0 :
-                return redirect('/cardapio/pagamento/')
+                return redirect('/cardapio/adicionar_nome/')
             else:
                 return redirect('/cardapio/meu_carrinho/')
     
@@ -72,16 +72,25 @@ def cardapio_carrinho(request,mesa,restaurante,id):
     except:
         request.session.create()
         session_key = request.session.session_key
+        print("iniciando seção")
         request.session['mesa_session'] = mesa.description
+        print("printando requisição de mesa: ")
+        print(request.session['mesa_session'])
         cart = Cart.objects.filter(session_key=session_key,concluido=False)
+        print("carrinho aí: ")
+        print(cart)
     try:
         cart_print = cart[0]
         cart_print.mesa_pedido = mesa
         cart_print.save()
+        print('carrinho print aí: ')
+        print(cart_print)
         return redirect('/cardapio/')
     except:
         novo_carrinho = Cart.objects.create(session_key=session_key,mesa_pedido=mesa,concluido=False)
         novo_carrinho.save()
+        print("novo carrinho: ")
+        print(cart)
         return redirect ('/cardapio/')
 
 def categoria_cookie(request,super_categoria):
@@ -98,7 +107,7 @@ def cardapio(request):
                 request.session['categoria']
             except:
                 request.session['categoria'] = None
-            super_categorias = Classificacoes.objects.all()
+            super_categorias = Classificacoes.objects.filter(restaurante=request.session['restaurante_servidor'])
             if request.session['categoria'] is None:
                 super_exibir = super_categorias.first()
             else:
@@ -130,7 +139,9 @@ def cardapio(request):
             try:
                 print('testando o método post')
                 item = request.POST.get("item")
+                print(item)
                 quantidade = request.POST.get("quantidade")
+                print(quantidade)
                 session_key = request.COOKIES[settings.SESSION_COOKIE_NAME]
                 item_adicionar = get_object_or_404(Item,item_nome=item)
                 try:
@@ -146,10 +157,13 @@ def cardapio(request):
                 except:
                     ## CASO N EXISTA SERÁ CRIADO UM NOVO PEDIDO
                     try:
+                        print("iniciando novo pedido")
                         request.session['mesa_session']
+                        print(request.session['mesa_session'])
                         novo_pedido = Pedido.objects.create(item=item_adicionar,quantidade=quantidade,session_key=session_key,concluido=False)
                         novo_pedido.save()
                     except:
+                        print("erro geral, tenta descobrir o que é ...:?")
                         pass
                     ### VERIFICA A EXISTENCIA DE UM CART
                     ## CASO N EXISTA UM CART O PRODUTO SERÁ CRIADO PORÉM SERÁ DELETAADO AUTOMATICAMENTE
@@ -169,7 +183,8 @@ def cardapio(request):
                         mesa_session = request.session['mesa_session']
                         print(mesa_session)
                         ##PROVÁVEL ERRO
-                        mesa = get_object_or_404(Mesa,description=mesa_session)
+                        restaurante = request.session['restaurante_servidor']
+                        mesa = get_object_or_404(Mesa,description=mesa_session,restaurante=restaurante)
                         novo_cart = Cart.objects.create(session_key=session_key,mesa_pedido=mesa)
                         pedido_a_adicionar = Pedido.objects.filter(session_key=session_key,concluido=False)
                         for p in pedido_a_adicionar:
@@ -191,8 +206,8 @@ def cardapio(request):
     ## ELA CONTERÁ CART E SESSION KEY
 def pagamento(request):
     if request.method == "GET":
-        mesas = Mesa.objects.all()
-        metodos_de_pagamento = Pagamento.objects.all()
+        mesas = Mesa.objects.filter(restaurante=request.session['restaurante_servidor'])
+        metodos_de_pagamento = MetodosDePagamento.objects.filter(restaurante=request.session['restaurante_servidor'])
         session_key = request.COOKIES[settings.SESSION_COOKIE_NAME]
         cart = Cart.objects.filter(session_key=session_key,concluido=False)
         context = {
@@ -201,7 +216,7 @@ def pagamento(request):
         return render (request,'pedidos/cliente/checkout.html',context=context)
     else:
         metodo = request.POST.get("pagamento_metodo")
-        metodo_de_pagamento = get_object_or_404(Pagamento, pagamento=metodo)
+        metodo_de_pagamento = get_object_or_404(MetodosDePagamento, nome_metodo_de_pagamento=metodo)
         session_key = request.COOKIES[settings.SESSION_COOKIE_NAME]
         cart = Cart.objects.filter(session_key=session_key,concluido=False)
         for i in cart[0].pedido.all():
@@ -214,23 +229,6 @@ def pagamento(request):
         alterar.metodo_de_pagamento = metodo_de_pagamento
         alterar.concluido = True
         alterar.save()
-
-        try:
-            ##variável para descobrir usuário pela mesa do restaurante 
-            user_variavel = alterar.mesa_pedido.criado_por
-            object  = Connect.objects.filter(user=user_variavel).first()
-            token_access = object.connection_token
-            token_url = object.link_encurtado
-            API_KEY = token_access
-            pb = Pushbullet(API_KEY)
-            push = pb.push_link("Você um novo pedido",token_url)
-            ##
-            print(push)
-        except Exception as e:
-            ## encontrar erro caso ocorra
-            print("erro em conectar com o pushbullet")
-            print("o erro é {}".format(e))
-        
         return render (request,'pedidos/cliente/aguardando_processamento.html')
         
         
@@ -239,6 +237,7 @@ def pagamento(request):
 
 
 def dashboard(request):
+    ##VERIFICAR SE USUÁRIO É PROPRIETÁRIO
     if request.user.is_authenticated: 
         carrinhos_filtro1 = Cart.objects.filter(concluido=True,finalizado=False)
         ###EXCLUINDO O QUE N PERTENCE AO USUARIO DA QUERYSET
@@ -290,6 +289,27 @@ def verPedido(request,id):
         return redirect ('/cardapio/pedidos/')
 
 
-### VERIFICADO
-### FUNCIONANDO CORRETAMENTE
-## NAO APRESENTOU ERROS
+##ADICIONAR ELEMENTOS A FUNÇÃO
+##USUÁRIO PASSA NOME PARA FAZER O PEDIDO
+
+def AdicionarNome(request):
+    token_usuario = request.COOKIES[settings.SESSION_COOKIE_NAME]
+    carrinho = Cart.objects.filter(session_key=token_usuario)[0]
+    if request.method == "POST":
+        form = FormNome(request.POST)
+        if form.is_valid():
+            nome_do_cliente = form.cleaned_data['nome_do_cliente']
+            ##PEGANDO PEDIDO ATUAL E ALTERANDO O NOME
+            carrinho.nome_do_cliente = nome_do_cliente
+            carrinho.save()
+            return redirect('/cardapio/pagamento/')
+        
+    else:
+        form = FormNome()
+        context = {'form': form,}
+        
+    return render(request,'pedidos/cliente/adicionar_nome.html',context=context)
+        
+        
+def posPedido(request):
+    pass

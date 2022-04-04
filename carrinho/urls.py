@@ -10,6 +10,6 @@ urlpatterns = [
     path('',cardapio),
     path('<str:mesa>/<str:restaurante>/<int:id>/',cardapio_carrinho),
     path('super_categoria/<str:super_categoria>/',categoria_cookie),
-    
+    path('adicionar_nome/',AdicionarNome),
     
 ]

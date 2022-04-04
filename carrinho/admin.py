@@ -17,7 +17,7 @@ class PedidoAdmin(admin.ModelAdmin):
 @admin.register(Cart)
 class CartAdmin(admin.ModelAdmin):
     ordering = ('-id',)
-    readonly_fields = ('data_do_pedido','pedido','mesa_pedido','metodo_de_pagamento','session_key','concluido','finalizado',)
+    readonly_fields = ('data_do_pedido','pedido','mesa_pedido','metodo_de_pagamento','session_key','concluido','finalizado','nome_do_cliente')
     list_display = ('mesa_pedido','metodo_de_pagamento','concluido','finalizado',)
     list_filter = ('concluido','finalizado','mesa_pedido',)
     
