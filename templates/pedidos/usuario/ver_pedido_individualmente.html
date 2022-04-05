@@ -16,7 +16,7 @@
   </head>
   <body>
     <!-- Just an image -->
-    {% include 'base/dark_base.html' %}
+    {% include 'pedidos/usuario/navbar/pedido_individualmente.html' %}
     <!--NEED DIV STYLE AND BUTTON TO SAVE!-->
     <div class="container">
         
@@ -27,8 +27,9 @@
         <div class="container text-center my-4">
         <h1 class="my-2">Informacoes do pedido:</h1>
         <h3>Hora do pedido: <strong class="text-danger">{{pedido.data_do_pedido}}</strong></h3>
-          <h3 class="text-center">Mesa: <strong class="text-danger">{{pedido.mesa_pedido}}</strong></h3>
-          <h3 class="text-center">Metodo de pagamento: <strong class="text-danger">{{ pedido.metodo_de_pagamento }}</strong></h3>
+        <h3>Nome do cliente: <strong class="text-danger">{{pedido.nome_do_cliente}}</strong></h3>
+        <h3 class="text-center">Mesa: <strong class="text-danger">{{pedido.mesa_pedido}}</strong></h3>
+        <h3 class="text-center">Metodo de pagamento: <strong class="text-danger">{{ pedido.metodo_de_pagamento }}</strong></h3>
   
         
         
@@ -44,7 +45,6 @@
                     <div class="row justify-content-center">
                         {% for pedido in pedido.pedido.all %}
                         <div class="card mt-2 mb-4 mx-2" style="width: 18rem;">
-                            
                             <div class="card-body">
                               {% if pedido.item.img %}
                               <img src="{{pedido.item.img.url}}" class="card-img-top" alt="...">
@@ -56,7 +56,7 @@
 
                         {% endfor %}
                         <div class="container-sm">
-                          <input class="btn btn-warning my-2" type="submit" value="PEDIDO CONCLUIDO" method="post">
+                          <input class="btn btn-warning my-2" type="submit" value="PREPARAR COMANDA" method="post">
                         </div>
                     </div>
 

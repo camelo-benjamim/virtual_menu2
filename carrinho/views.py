@@ -15,9 +15,31 @@ import time
 
 
 ####
-
+def AdicionarNome(request):
+    restaurante_id = request.session['restaurante_servidor']
+    restaurante = get_object_or_404(Restaurante, id=restaurante_id)
+    token_usuario = request.COOKIES[settings.SESSION_COOKIE_NAME]
+    carrinho = Cart.objects.filter(session_key=token_usuario)[0]
+    if request.method == "POST":
+        form = FormNome(request.POST)
+        if form.is_valid():
+            nome_do_cliente = form.cleaned_data['nome_do_cliente']
+            ##PEGANDO PEDIDO ATUAL E ALTERANDO O NOME
+            carrinho.nome_do_cliente = nome_do_cliente
+            carrinho.save()
+            return redirect('/cardapio/pagamento/')
+        
+    else:
+        form = FormNome()
+        context = {'form': form,'restaurante': restaurante,}
+        
+    return render(request,'pedidos/cliente/adicionar_nome.html',context=context)
+        
+####
 def ver_carrinho(request):
     try:
+        restaurante_id = request.session['restaurante_servidor']
+        restaurante = get_object_or_404(Restaurante, id=restaurante_id)
         session_key = request.COOKIES[settings.SESSION_COOKIE_NAME]
         if request.method == "GET":
             carrinho = get_object_or_404(Cart,concluido=False,session_key=session_key)
@@ -31,7 +53,7 @@ def ver_carrinho(request):
                 valor_total += pedido_v.item.preco * pedido_v.quantidade
             
             context = {
-                'carrinho':carrinho, 'pedidos': pedidos, 'valor_total' : valor_total,'quantidade': quantidade,
+                'carrinho':carrinho, 'pedidos': pedidos, 'valor_total' : valor_total,'quantidade': quantidade, 'restaurante': restaurante,
             }
             return render (request,'pedidos/cliente/carrinho.html',context = context)
         
@@ -105,6 +127,8 @@ def cardapio(request):
         if request.method == "GET":
             try:
                 request.session['categoria']
+                restaurante_id = request.session['restaurante_servidor']
+                restaurante = get_object_or_404(Restaurante, id=restaurante_id)
             except:
                 request.session['categoria'] = None
             super_categorias = Classificacoes.objects.filter(restaurante=request.session['restaurante_servidor'])
@@ -132,7 +156,9 @@ def cardapio(request):
             except:
                 lista_itens = []
                 quantidade_cart = 0
-            context = {'super_categorias': super_categorias,'categorias':categorias,'produtos':produtos,'form':form, 'quantidade_cart': quantidade_cart,'lista_itens':lista_itens,}        
+            print("o restaurante é: ")
+            print(restaurante)
+            context = {'super_categorias': super_categorias,'categorias':categorias,'produtos':produtos,'form':form, 'quantidade_cart': quantidade_cart,'lista_itens':lista_itens,'restaurante':restaurante,}        
             return render(request,'pedidos/cliente/cardapio.html',context=context)
         else:
             ##ERRO NO MÉTODO POST
@@ -205,13 +231,15 @@ def cardapio(request):
 ### CASO SEJA RETORNADA PELO PROPRIO SISTEMA
     ## ELA CONTERÁ CART E SESSION KEY
 def pagamento(request):
+    restaurante_id = request.session['restaurante_servidor']
+    restaurante = get_object_or_404(Restaurante, id=restaurante_id)
     if request.method == "GET":
         mesas = Mesa.objects.filter(restaurante=request.session['restaurante_servidor'])
         metodos_de_pagamento = MetodosDePagamento.objects.filter(restaurante=request.session['restaurante_servidor'])
         session_key = request.COOKIES[settings.SESSION_COOKIE_NAME]
         cart = Cart.objects.filter(session_key=session_key,concluido=False)
         context = {
-            'metodos_de_pagamento': metodos_de_pagamento, 'mesas': mesas, 'cart': cart,
+            'metodos_de_pagamento': metodos_de_pagamento, 'mesas': mesas, 'cart': cart, 'restaurante': restaurante,
         }
         return render (request,'pedidos/cliente/checkout.html',context=context)
     else:
@@ -229,7 +257,7 @@ def pagamento(request):
         alterar.metodo_de_pagamento = metodo_de_pagamento
         alterar.concluido = True
         alterar.save()
-        return render (request,'pedidos/cliente/aguardando_processamento.html')
+        return redirect("/cardapio/pos_pedido")
         
         
 ### DEVIDO A POSSIBILIDADE DE VULNERABILIDADE ELA SÓ É ACESSADA QUANDO USUÁRIO AUTENTICADO
@@ -241,8 +269,16 @@ def dashboard(request):
     if request.user.is_authenticated: 
         carrinhos_filtro1 = Cart.objects.filter(concluido=True,finalizado=False)
         ###EXCLUINDO O QUE N PERTENCE AO USUARIO DA QUERYSET
-        restaurante = request.session['restaurante']
-        restaurante = get_object_or_404(Restaurante, id=restaurante)
+        try:
+            restaurante = request.session['restaurante']
+            restaurante = get_object_or_404(Restaurante, id=restaurante,proprietario=request.user)
+            ##VERIFICANDO TOTAL DE RESTAURANTES
+            contabilizador_restaurantes = 0
+            restaurantes_total = Restaurante.objects.filter(proprietario=request.user)
+            for i in restaurantes_total:
+                contabilizador_restaurantes += 1
+        except:
+            return redirect ('/escolher_restaurante/')
         mesas = Mesa.objects.filter(restaurante=restaurante)
         carrinhos = []
         for i in carrinhos_filtro1:
@@ -257,7 +293,7 @@ def dashboard(request):
             
         ## RESOLVER MILLESECOUNDS
         context = {
-            'total': str(contador), 'carrinhos': carrinhos,
+            'total': str(contador), 'carrinhos': carrinhos, 'restaurante': restaurante,'contabilizador_restaurantes': str(contabilizador_restaurantes)
         }
         return render(request,'pedidos/usuario/dashboard.html',context=context)
     
@@ -269,8 +305,11 @@ def dashboard(request):
 ### VER PEDIDOS INDIVIDUALMENTE
 @login_required
 def verPedido(request,id):
+    restaurante = request.session['restaurante']
+    restaurante = get_object_or_404(Restaurante, id=restaurante,proprietario=request.user)
     if request.method == "GET":
     ##EXIBE O PEDIDO DO CLIENTE MOSTRANDO TODOS OS ITENS PEDIDOS PELO CLIENTE...
+        ##PROCURAR POSSÍVEIS FALHAS DE SEGURANÇA
         pedido = Cart.objects.filter(id=id)[0]
         conteudo = pedido.pedido.all()
         valor_total = 0
@@ -278,7 +317,7 @@ def verPedido(request,id):
             valor_total += i.item.preco * i.quantidade
             
         
-        context = {'pedido': pedido,'valor_total': valor_total,}
+        context = {'pedido': pedido,'valor_total': valor_total,'restaurante': restaurante,}
         return render(request,'pedidos/usuario/ver_pedido_individualmente.html',context=context)
     
     else:
@@ -292,24 +331,11 @@ def verPedido(request,id):
 ##ADICIONAR ELEMENTOS A FUNÇÃO
 ##USUÁRIO PASSA NOME PARA FAZER O PEDIDO
 
-def AdicionarNome(request):
-    token_usuario = request.COOKIES[settings.SESSION_COOKIE_NAME]
-    carrinho = Cart.objects.filter(session_key=token_usuario)[0]
-    if request.method == "POST":
-        form = FormNome(request.POST)
-        if form.is_valid():
-            nome_do_cliente = form.cleaned_data['nome_do_cliente']
-            ##PEGANDO PEDIDO ATUAL E ALTERANDO O NOME
-            carrinho.nome_do_cliente = nome_do_cliente
-            carrinho.save()
-            return redirect('/cardapio/pagamento/')
-        
-    else:
-        form = FormNome()
-        context = {'form': form,}
-        
-    return render(request,'pedidos/cliente/adicionar_nome.html',context=context)
-        
-        
+
 def posPedido(request):
-    pass
+    restaurante_id = request.session['restaurante_servidor']
+    restaurante = get_object_or_404(Restaurante, id=restaurante_id)
+    context = {
+        'restaurante': restaurante,
+    }
+    return render (request,'pedidos/cliente/aguardando_processamento.html',context=context)
