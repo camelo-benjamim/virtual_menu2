@@ -12,6 +12,13 @@ from django.conf import settings
 from django.contrib import messages
 from dateutil.parser import parse
 import time
+import datetime
+import io
+from django.http import FileResponse
+from reportlab.pdfgen import canvas
+from reportlab.lib.units import inch
+from reportlab.lib.pagesizes import letter
+import json
 
 
 ####
@@ -121,14 +128,18 @@ def categoria_cookie(request,super_categoria):
 
 ##CONTÉM ERROS, VERIFICAR E CORRIGIR
 def cardapio(request):
+    print("printando o restaurante meramente para fins de teste: ")
+    print(str(request.session['restaurante_servidor']))
     if request.user.is_active == True:
         return redirect('/cardapio/pedidos/')
     else:
         if request.method == "GET":
+            ##PASSANDO RESTAURANTE ARGUMENTO
+            restaurante_id = request.session['restaurante_servidor']
+            restaurante = get_object_or_404(Restaurante, id=restaurante_id)
+            ##VERIFICANDO COOKIES DE OUTRAS FUNÇÕES
             try:
                 request.session['categoria']
-                restaurante_id = request.session['restaurante_servidor']
-                restaurante = get_object_or_404(Restaurante, id=restaurante_id)
             except:
                 request.session['categoria'] = None
             super_categorias = Classificacoes.objects.filter(restaurante=request.session['restaurante_servidor'])
@@ -301,6 +312,13 @@ def dashboard(request):
         return redirect ('/auth/user/login/')
     
     
+def posPedido(request):
+    restaurante_id = request.session['restaurante_servidor']
+    restaurante = get_object_or_404(Restaurante, id=restaurante_id)
+    context = {
+        'restaurante': restaurante,
+    }
+    return render (request,'pedidos/cliente/aguardando_processamento.html',context=context)
 
 ### VER PEDIDOS INDIVIDUALMENTE
 @login_required
@@ -321,21 +339,111 @@ def verPedido(request,id):
         return render(request,'pedidos/usuario/ver_pedido_individualmente.html',context=context)
     
     else:
-        ## ALTERA O ESTADO PARA FINALIZADO == TRUE
+        ##COOKIES DO PEDIDO
         pedido = Cart.objects.filter(id=id)[0]
         pedido.finalizado = True
         pedido.save()
-        return redirect ('/cardapio/pedidos/')
+        ##PASSANDO PEDIDO PARA A PRÓXIMA VIEW NA FORMA DE COOKIE
+        lista_pedidos_dict = {}
+        contador = 1
+        for i in pedido.pedido.all():
+            item =  i.item.item_nome
+            quantidade = i.quantidade
+            preco = float(i.item.preco * quantidade)
+            lista_pedido = [item,quantidade,preco]
+            lista_pedidos_dict[str(contador)] = lista_pedido
+            contador += 1 
+        print(lista_pedidos_dict)
+        imprimir_dict = {
+            ##CARRINHO
+            'restaurante': restaurante.nome_restaurante,
+            'hora_do_pedido': str(pedido.data_do_pedido),
+            'data_do_pedido': str(pedido.pedido_data_relatorio),
+            'mesa_do_pedido': str(pedido.mesa_pedido),
+            'nome_do_cliente': str(pedido.nome_do_cliente),
+            'metodo_de_pagamento': str(pedido.metodo_de_pagamento.nome_metodo_de_pagamento),
+            
+            ##TODOS OS PEDIDOS
+            'lista_pedidos': lista_pedidos_dict,
+            
+            
+        }
+        ##PASSANDO DICT PARA JSON
+        imprimir_json = json.dumps(imprimir_dict)
+        request.session['imprimir_comanda'] = imprimir_json
+        
+        return redirect ('/cardapio/imprimir_comanda/')
 
 
 ##ADICIONAR ELEMENTOS A FUNÇÃO
 ##USUÁRIO PASSA NOME PARA FAZER O PEDIDO
 
 
-def posPedido(request):
-    restaurante_id = request.session['restaurante_servidor']
-    restaurante = get_object_or_404(Restaurante, id=restaurante_id)
-    context = {
-        'restaurante': restaurante,
-    }
-    return render (request,'pedidos/cliente/aguardando_processamento.html',context=context)
+
+@login_required
+def imprimirComanda(request):
+    print("printando o pedido cookie")
+    print(request.session['imprimir_comanda'])
+    # Crie o objeto HttpResponse com o cabeçalho PDF apropriado.
+    ##CREATE BYTESTREAM BUFFER
+    buf = io.BytesIO()
+    ##create a canvas
+    c = canvas.Canvas(buf,pagesize=letter,bottomup=0)
+    ##craate a text_object
+    textob = c.beginText()
+    textob.setTextOrigin(inch,inch)
+    textob.setFont('Helvetica',14)
+    lines = []
+    ##
+    comanda_session = request.session['imprimir_comanda']
+    comanda = json.loads(comanda_session)
+    ##
+    valor_final_geral = 0
+    lines.append(comanda['restaurante'])
+    lines.append(' ')
+    lines.append('Hora do pedido: ' + comanda['hora_do_pedido'])
+    lines.append('Data do pedido: ' + comanda['data_do_pedido'])
+    lines.append('Metodo de pagamento: ' + comanda['metodo_de_pagamento'])
+    lines.append('Nome do cliente: ' + comanda['nome_do_cliente'])
+    
+    ##ENTRANDO EM LISTA PEDIDOS
+    lines.append('')
+    lines.append('Lista de pedidos: ')
+    for i in comanda['lista_pedidos'].items():
+        lines.append('')
+        lines.append('Pedido ' + str(i[0]) + ': ')
+        lines.append('')
+        contador_argumento = 0
+        for j in i[1]:
+            if contador_argumento == 0:
+                argumento = "Item: "
+                contador_argumento += 1
+            elif contador_argumento == 1:
+                argumento = "Quantidade: "
+                contador_argumento += 1
+            else:
+                argumento = "Valor total: R$ "
+                valor_final_geral += j
+                contador_argumento += 1
+            lines.append(argumento + str(j))
+    
+    lines.append('')
+    lines.append('Valor total dos pedidos: R$ ' + str(valor_final_geral))
+        
+    
+    
+    ## add some lines of text
+
+    ##loop 
+    for line in lines:
+        textob.textLine(line)
+
+    ## finish up
+    c.drawText(textob)
+    c.showPage()
+    c.save()
+    buf.seek(0)
+    
+    name_file = str(datetime.datetime.now()) + 'pedido.pdf'
+    ##return something
+    return FileResponse(buf,as_attachment=True,filename=name_file)

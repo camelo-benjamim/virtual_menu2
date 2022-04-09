@@ -39,7 +39,7 @@
         <div class="list-group">
             {%for i in carrinhos%}
            
-            <a href="/cardapio/ver_pedido/{{i.id}}/" class="list-group-item list-group-item-action" aria-current="true">
+            <a href="/cardapio/ver_pedido/{{i.id}}/" target="_blank" class="list-group-item list-group-item-action" aria-current="true">
               <div class="d-flex w-100 justify-content-between">
                 <h4 class="mb-1 text-danger">{{i.mesa_pedido}}</h4>
                 <small>{{i.data_do_pedido}}</small>
