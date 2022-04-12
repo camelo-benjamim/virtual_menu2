@@ -31,7 +31,7 @@ SECRET_KEY = 'django-insecure-%t^icwtx(^6bqz)7kch*@ifvfv60m4()g2)^1chn-2p8vihi6g
 ### ----
     ### RODANDO LOCALMENTE
     ### SERVIDOR TESTE
-DEBUG = True
+DEBUG = False
     ### QUANDO FOR OFICIAL
     ### COLOCAR O DEBUG ABAIXO
     
@@ -49,10 +49,10 @@ INSTALLED_APPS = [
     ##'whitenoise.runserver_nostatic',
     'accounts',
     'menu',
-    
     'mesa',
     'pagamento',
     'carrinho',
+    'licensa',
     ##'relatorios',
     ### APLICATIVOS DO DJANGO
     'django.contrib.admin',

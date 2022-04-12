@@ -1,4 +1,5 @@
 ### IMPORTS
+from calendar import month
 from datetime import date, datetime
 from django.core.checks import messages
 from django.shortcuts import get_object_or_404, render,redirect
@@ -11,8 +12,11 @@ from django.contrib.auth.decorators import login_required
 from django.conf import settings
 from django.contrib import messages
 from dateutil.parser import parse
+from licensa.models import Licensa
+####
 import time
 import datetime
+from datetime import timedelta as td
 import io
 from django.http import FileResponse
 from reportlab.pdfgen import canvas
@@ -138,6 +142,26 @@ def cardapio(request):
             restaurante_id = request.session['restaurante_servidor']
             restaurante = get_object_or_404(Restaurante, id=restaurante_id)
             ##VERIFICANDO COOKIES DE OUTRAS FUNÇÕES
+            try:
+                licensa = get_object_or_404(Licensa,restaurante=restaurante)
+                ##VERIFICANDO TEMPO DE VENCIMENTO DE LICENSA E SE É VERIFICADO
+                if licensa.verificado == True:
+                    ##verificando se a licensa ainda esta ativa
+                    vencida = datetime.datetime.now() > licensa.data_expiracao
+                    if vencida == True:
+                        print("LICENSA VENCIDA")
+                        if datetime.datetime.now() > licensa.data_expiracao + td(days=15):
+                            print("Vencido a mais de 15 dias")
+                        ##VERIFICANDO SE ESTÁ VENCIDA A MAIS DE 15 DIAS
+                        else:
+                            print("vencido, em prazo da aviso! ")
+                    else:
+                        print("licensa em dias")
+                else:
+                    ###REDIRECONE DIRETO PARA TELA DE ADICIONAR LICENSA
+                    print("licensa não verificada...")
+            except:
+                print("ERRO AO VERIFICAR LICENSA")
             try:
                 request.session['categoria']
             except:
@@ -283,6 +307,28 @@ def dashboard(request):
         try:
             restaurante = request.session['restaurante']
             restaurante = get_object_or_404(Restaurante, id=restaurante,proprietario=request.user)
+            
+            ##ANÁLISE DE LICENSA DO RESTAURANTE
+            try:
+                licensa = get_object_or_404(Licensa,restaurante=restaurante)
+                ##VERIFICANDO TEMPO DE VENCIMENTO DE LICENSA E SE É VERIFICADO
+                if licensa.verificado == True:
+                    ##verificando se a licensa ainda esta ativa
+                    vencida = datetime.datetime.now() > licensa.data_expiracao
+                    if vencida == True:
+                        print("SUA LICENSA ESTÁ VENCIDA")
+                        if datetime.datetime.now() > licensa.data_expiracao + td(days=15):
+                            print("Vencido a mais de 15 dias")
+                        ##VERIFICANDO SE ESTÁ VENCIDA A MAIS DE 15 DIAS
+                        else:
+                            print("vencido, em prazo da aviso! ")
+                    else:
+                        print("tua licensa está em dias")
+                else:
+                    ###REDIRECONE DIRETO PARA TELA DE ADICIONAR LICENSA
+                    print("tua licensa ainda não está verificada...")
+            except:
+                print("ERRO AO VERIFICAR LICENSA")
             ##VERIFICANDO TOTAL DE RESTAURANTES
             contabilizador_restaurantes = 0
             restaurantes_total = Restaurante.objects.filter(proprietario=request.user)

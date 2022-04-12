@@ -4,16 +4,21 @@ from menu.models import *
 from menu.forms import *
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
-
-##Restaurante --> funções (adicionar,editar e remover)
+###
+###
+##Imports para verificar licensa do restaurante do usuário
+from licensa.models import Licensa
+from datetime import datetime, timedelta as td
+###
 def adicionarRestaurante(request):
+    ###
     if request.method == "GET":
         form = FormRestaurante(current_user=request.user)
         contador_restaurantes1 = Restaurante.objects.filter(proprietario=request.user)
         contador_restaurantes2 = Restaurante.objects.filter(usuario_criador=request.user)
         contador_geral = 0
         contagem_geral = []
-            ##adicionando tudo ...
+        ##adicionando tudo ...
         for i in contador_restaurantes1:
             if not contagem_geral.__contains__(i):
                 contagem_geral.append(i)
@@ -25,6 +30,7 @@ def adicionarRestaurante(request):
             
         context = {'form': form,'contador_geral': contador_geral,}
         return render(request,'restaurante/adicionar_restaurante.html',context=context)  
+    ###
     else:
         form = FormRestaurante(request.user,request.POST,request.FILES)
         if form.is_valid():
@@ -54,10 +60,9 @@ def adicionarRestaurante(request):
             
         context = {'form':form,}
         return render(request,'restaurante/adicionar_restaurante.html',context=context)
-###Editar restaurante existente
-##ÚNICO BUG NESSA CLASSE
+###
 def editarRestaurante(request):
-    ##mecanismo de verificação de segurança
+    ##Mecanismo de verificação de segurança...
     try:
         request.session['restaurante']
     except:
@@ -208,6 +213,30 @@ def categoriasView(request,superCat):
 ###Adicionando sub-categoria
 @login_required
 def addCategoria(request):
+    ##
+    try:
+        restaurante = request.session['restaurante']
+        restaurante = get_object_or_404(Restaurante,id=restaurante)
+        licensa = get_object_or_404(Licensa,restaurante=restaurante)
+        ##VERIFICANDO TEMPO DE VENCIMENTO DE LICENSA E SE É VERIFICADO
+        if licensa.verificado == True:
+        ##verificando se a licensa ainda esta ativa
+            vencida = datetime.datetime.now() > licensa.data_expiracao
+            if vencida == True:
+                print("SUA LICENSA ESTÁ VENCIDA")
+                if datetime.datetime.now() > licensa.data_expiracao + td(days=15):
+                    print("Vencido a mais de 15 dias")
+                    ##VERIFICANDO SE ESTÁ VENCIDA A MAIS DE 15 DIAS
+                else:
+                    print("vencido, em prazo da aviso! ")
+            else:
+                print("tua licensa está em dias")
+        else:
+            ###REDIRECONE DIRETO PARA TELA DE ADICIONAR LICENSA
+            print("tua licensa ainda não está verificada...")
+    except:
+        print("ERRO AO VERIFICAR LICENSA")
+    ##
     if request.method == "GET":
         ##passando restaurante como argumento para o form do init
         ##implementando outro mecanismo de segurança contre fraude nos cookies
@@ -231,7 +260,30 @@ def addCategoria(request):
 ### Adicionando super-categoria
 @login_required
 def addSuperCategoria(request):
+    ###
     restaurante_cookie = request.session['restaurante']
+    restaurante = get_object_or_404(Restaurante,id=restaurante_cookie)
+    ##
+    try:
+        licensa = get_object_or_404(Licensa,restaurante=restaurante)
+        ##VERIFICANDO TEMPO DE VENCIMENTO DE LICENSA E SE É VERIFICADO
+        if licensa.verificado == True:
+        ##verificando se a licensa ainda esta ativa
+            vencida = datetime.datetime.now() > licensa.data_expiracao
+            if vencida == True:
+                print("SUA LICENSA ESTÁ VENCIDA")
+                if datetime.datetime.now() > licensa.data_expiracao + td(days=15):
+                    print("Vencido a mais de 15 dias")
+                    ##VERIFICANDO SE ESTÁ VENCIDA A MAIS DE 15 DIAS
+                else:
+                    print("vencido, em prazo da aviso! ")
+            else:
+                print("tua licensa está em dias")
+        else:
+            ###REDIRECONE DIRETO PARA TELA DE ADICIONAR LICENSA
+            print("tua licensa ainda não está verificada...")
+    except:
+        print("ERRO AO VERIFICAR LICENSA")
     ##  mecanismo de segurança sendo implementado abaixo:
     try:
         ## verificando se usuário é proprietário do restaurante
@@ -280,6 +332,28 @@ def deleteCategoria(request,categoria):
     ## mesmo não sendo utilizado nesse caso, caso o cookie restaurante não esteja funcionando, o usuário
     ## será redirecionado para a '/escolher_restaurante/'
     try:
+        restaurante = request.session['restaurante']
+        restaurante = get_object_or_404(Restaurante,id=restaurante)
+        licensa = get_object_or_404(Licensa,restaurante=restaurante)
+        ##VERIFICANDO TEMPO DE VENCIMENTO DE LICENSA E SE É VERIFICADO
+        if licensa.verificado == True:
+        ##verificando se a licensa ainda esta ativa
+            vencida = datetime.datetime.now() > licensa.data_expiracao
+            if vencida == True:
+                print("SUA LICENSA ESTÁ VENCIDA")
+                if datetime.datetime.now() > licensa.data_expiracao + td(days=15):
+                    print("Vencido a mais de 15 dias")
+                    ##VERIFICANDO SE ESTÁ VENCIDA A MAIS DE 15 DIAS
+                else:
+                    print("vencido, em prazo da aviso! ")
+            else:
+                print("tua licensa está em dias")
+        else:
+            ###REDIRECONE DIRETO PARA TELA DE ADICIONAR LICENSA
+            print("tua licensa ainda não está verificada...")
+    except:
+        print("ERRO AO VERIFICAR LICENSA")
+    try:
         categorias = get_object_or_404(Item_classificacao, text=categoria).delete()
         return redirect ('/meus_produtos/')
     except:
@@ -297,6 +371,28 @@ def deleteSuperCategoria(request,super_categoria):
         ## verificando se usuário é usuário criador do restaurante
         restaurante = get_object_or_404(Restaurante,usuario_criador=request.user,id=request.session['restaurante'])
     try:
+        restaurante = request.session['restaurante']
+        restaurante = get_object_or_404(Restaurante,id=restaurante)
+        licensa = get_object_or_404(Licensa,restaurante=restaurante)
+        ##VERIFICANDO TEMPO DE VENCIMENTO DE LICENSA E SE É VERIFICADO
+        if licensa.verificado == True:
+        ##verificando se a licensa ainda esta ativa
+            vencida = datetime.datetime.now() > licensa.data_expiracao
+            if vencida == True:
+                print("SUA LICENSA ESTÁ VENCIDA")
+                if datetime.datetime.now() > licensa.data_expiracao + td(days=15):
+                    print("Vencido a mais de 15 dias")
+                    ##VERIFICANDO SE ESTÁ VENCIDA A MAIS DE 15 DIAS
+                else:
+                    print("vencido, em prazo da aviso! ")
+            else:
+                print("tua licensa está em dias")
+        else:
+            ###REDIRECONE DIRETO PARA TELA DE ADICIONAR LICENSA
+            print("tua licensa ainda não está verificada...")
+    except:
+        print("ERRO AO VERIFICAR LICENSA")
+    try:
         categorias = get_object_or_404(Classificacoes, nome_classificacao=super_categoria,restaurante=restaurante).delete()
         return redirect ('/meus_produtos/')
     except:
@@ -306,6 +402,32 @@ def deleteSuperCategoria(request,super_categoria):
 ##Editar/atualizar subcategoria, passando novos valores(x=y) sobre os antigos
 @login_required
 def updateCategoria(request,categoria):
+    ##
+    try:
+        restaurante = request.session['restaurante']
+        restaurante = get_object_or_404(Restaurante,id=restaurante)
+        licensa = get_object_or_404(Licensa,restaurante=restaurante)
+        ##VERIFICANDO TEMPO DE VENCIMENTO DE LICENSA E SE É VERIFICADO
+        if licensa.verificado == True:
+        ##verificando se a licensa ainda esta ativa
+            vencida = datetime.datetime.now() > licensa.data_expiracao
+            if vencida == True:
+                print("SUA LICENSA ESTÁ VENCIDA")
+                if datetime.datetime.now() > licensa.data_expiracao + td(days=15):
+                    print("Vencido a mais de 15 dias")
+                    ##VERIFICANDO SE ESTÁ VENCIDA A MAIS DE 15 DIAS
+                else:
+                    print("vencido, em prazo da aviso! ")
+            else:
+                print("tua licensa está em dias")
+        else:
+            ###REDIRECONE DIRETO PARA TELA DE ADICIONAR LICENSA
+            print("tua licensa ainda não está verificada...")
+    except:
+        print("ERRO AO VERIFICAR LICENSA")
+        
+    ###
+    
     if request.session['restaurante']:
         post = get_object_or_404(Item_classificacao, text=categoria)
         form = FormClassificacao(restaurante=request.session['restaurante'],instance=post)
@@ -338,6 +460,28 @@ def updateSuperCategoria(request,super_categoria):
         ## verificando se usuário é usuário criador
         restaurante = get_object_or_404(Restaurante,id=restaurante_pk,usuario_criador=request.user)
     try:
+        try:
+            restaurante = request.session['restaurante']
+            restaurante = get_object_or_404(Restaurante,id=restaurante)
+            licensa = get_object_or_404(Licensa,restaurante=restaurante)
+            ##VERIFICANDO TEMPO DE VENCIMENTO DE LICENSA E SE É VERIFICADO
+            if licensa.verificado == True:
+            ##verificando se a licensa ainda esta ativa
+                vencida = datetime.datetime.now() > licensa.data_expiracao
+                if vencida == True:
+                    print("SUA LICENSA ESTÁ VENCIDA")
+                    if datetime.datetime.now() > licensa.data_expiracao + td(days=15):
+                        print("Vencido a mais de 15 dias")
+                        ##VERIFICANDO SE ESTÁ VENCIDA A MAIS DE 15 DIAS
+                    else:
+                        print("vencido, em prazo da aviso! ")
+                else:
+                    print("tua licensa está em dias")
+            else:
+                ###REDIRECONE DIRETO PARA TELA DE ADICIONAR LICENSA
+                print("tua licensa ainda não está verificada...")
+        except:
+            print("ERRO AO VERIFICAR LICENSA")
         post = get_object_or_404(Classificacoes, nome_classificacao=super_categoria,restaurante=restaurante)
         form = FormClassificacoes(instance=post)
         if(request.method == 'POST'):
@@ -397,6 +541,28 @@ def filtrarPorCategoria(request,categoria):
 ##COLOCAR PONTO FIXO
 @login_required
 def adicionarProduto(request):
+    try:
+        restaurante = request.session['restaurante']
+        restaurante = get_object_or_404(Restaurante,id=restaurante)
+        licensa = get_object_or_404(Licensa,restaurante=restaurante)
+        ##VERIFICANDO TEMPO DE VENCIMENTO DE LICENSA E SE É VERIFICADO
+        if licensa.verificado == True:
+        ##verificando se a licensa ainda esta ativa
+            vencida = datetime.datetime.now() > licensa.data_expiracao
+            if vencida == True:
+                print("SUA LICENSA ESTÁ VENCIDA")
+                if datetime.datetime.now() > licensa.data_expiracao + td(days=15):
+                    print("Vencido a mais de 15 dias")
+                    ##VERIFICANDO SE ESTÁ VENCIDA A MAIS DE 15 DIAS
+                else:
+                    print("vencido, em prazo da aviso! ")
+            else:
+                print("tua licensa está em dias")
+        else:
+            ###REDIRECONE DIRETO PARA TELA DE ADICIONAR LICENSA
+            print("tua licensa ainda não está verificada...")
+    except:
+        print("ERRO AO VERIFICAR LICENSA")
     if request.session['restaurante']:
         if request.method == 'GET':
             ##passar classificação nos forms
@@ -420,6 +586,29 @@ def adicionarProduto(request):
 @login_required
 def editarProduto(request,produto):
     if request.session['restaurante']:
+        try:
+            restaurante = request.session['restaurante']
+            restaurante = get_object_or_404(Restaurante,id=restaurante)
+            licensa = get_object_or_404(Licensa,restaurante=restaurante)
+            ##VERIFICANDO TEMPO DE VENCIMENTO DE LICENSA E SE É VERIFICADO
+            if licensa.verificado == True:
+            ##verificando se a licensa ainda esta ativa
+                vencida = datetime.datetime.now() > licensa.data_expiracao
+                if vencida == True:
+                    print("SUA LICENSA ESTÁ VENCIDA")
+                    if datetime.datetime.now() > licensa.data_expiracao + td(days=15):
+                        print("Vencido a mais de 15 dias")
+                        ##VERIFICANDO SE ESTÁ VENCIDA A MAIS DE 15 DIAS
+                    else:
+                        print("vencido, em prazo da aviso! ")
+                else:
+                    print("tua licensa está em dias")
+            else:
+                ###REDIRECONE DIRETO PARA TELA DE ADICIONAR LICENSA
+                print("tua licensa ainda não está verificada...")
+        except:
+            print("ERRO AO VERIFICAR LICENSA")
+        ##
         post = get_object_or_404(Item,item_nome=produto)
         form = FormEditItens(classificacao=request.session['classificacao'],instance=post)
         if(request.method == 'POST'):
@@ -444,6 +633,29 @@ def editarProduto(request,produto):
 @login_required
 def apagarProduto(request,produto):
     if request.session['restaurante']:
+        try:
+            restaurante = request.session['restaurante']
+            restaurante = get_object_or_404(Restaurante,id=restaurante)
+            licensa = get_object_or_404(Licensa,restaurante=restaurante)
+            ##VERIFICANDO TEMPO DE VENCIMENTO DE LICENSA E SE É VERIFICADO
+            if licensa.verificado == True:
+            ##verificando se a licensa ainda esta ativa
+                vencida = datetime.datetime.now() > licensa.data_expiracao
+                if vencida == True:
+                    print("SUA LICENSA ESTÁ VENCIDA")
+                    if datetime.datetime.now() > licensa.data_expiracao + td(days=15):
+                        print("Vencido a mais de 15 dias")
+                        ##VERIFICANDO SE ESTÁ VENCIDA A MAIS DE 15 DIAS
+                    else:
+                        print("vencido, em prazo da aviso! ")
+                else:
+                    print("tua licensa está em dias")
+            else:
+                ###REDIRECONE DIRETO PARA TELA DE ADICIONAR LICENSA
+                print("tua licensa ainda não está verificada...")
+        except:
+            print("ERRO AO VERIFICAR LICENSA")
+        ###
         produto = get_object_or_404(Item,item_nome = produto).delete()
         return redirect ('/meus_produtos/')
     else:
