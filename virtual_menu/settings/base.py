@@ -12,7 +12,7 @@ https://docs.djangoproject.com/en/3.2/ref/settings/
 ##
 import os
 from pathlib import Path
-from pickle import TRUE
+from pickle import FALSE, TRUE
 
 
 
@@ -53,6 +53,7 @@ INSTALLED_APPS = [
     'pagamento',
     'carrinho',
     'licensa',
+    'qr_cardapio_fisico',
     ##'relatorios',
     ### APLICATIVOS DO DJANGO
     'django.contrib.admin',
