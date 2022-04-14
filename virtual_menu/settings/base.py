@@ -54,6 +54,7 @@ INSTALLED_APPS = [
     'carrinho',
     'licensa',
     'qr_cardapio_fisico',
+    'menu_garcom',
     ##'relatorios',
     ### APLICATIVOS DO DJANGO
     'django.contrib.admin',
